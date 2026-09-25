@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
-import { ProfileDropdown } from './ProfileDropdown';
+import { ProfileDropdown } from '../ProfileDropdown';
 import { Pill } from '@/shared/ui/Pill';
 
 import { UserGuestIcon } from '@/shared/icons/UserGuestIcon';
