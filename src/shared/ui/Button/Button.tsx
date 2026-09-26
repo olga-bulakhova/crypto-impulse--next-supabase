@@ -26,7 +26,7 @@ export const Button = ({
 }: ButtonProps) => {
   // Базовые интерактивные стили для всех типов кнопок
   const baseStyles =
-    'inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 focus:outline-none disabled:pointer-events-none disabled:border-zinc-900 disabled:bg-zinc-900 disabled:text-zinc-600 select-none';
+    'inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl text-sm font-semibold tracking-tight transition-all duration-300 focus:outline-none disabled:pointer-events-none disabled:border-zinc-900 disabled:bg-zinc-900 disabled:text-zinc-600 select-none disabled:shadow-none';
 
   // 🎨 СТИЛИ КИБЕР-ПАЛИТРЫ (Идеальное сочетание с globals.css)
   const variantStyles = {
@@ -35,7 +35,7 @@ export const Button = ({
 
     // 🔵 ГЛАВНАЯ: Электрический кибер-синий со свечением
     cyber:
-      'border-transparent bg-cyan-400 px-5 text-zinc-950 shadow-lg shadow-cyan-500/10 hover:bg-cyan-300 hover:shadow-cyan-500/20 hover:scale-[1.01] active:scale-[0.98]',
+      'border-transparent bg-cyan-400 px-5 text-zinc-950 shadow-lg shadow-cyan-500/10 hover:bg-cyan-300 hover:shadow-cyan-500/20  active:scale-[0.98]',
 
     // 🟡 АКЦЕНТНАЯ: Янтарно-золотая для настроек и индикаторов
     amber:

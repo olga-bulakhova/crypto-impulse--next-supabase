@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 // 🌟 Импортируем новые технологичные шрифты из Google Fonts
-import { Plus_Jakarta_Sans, Space_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Space_Mono, Inter } from 'next/font/google';
 import './globals.css';
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
 
 // Настраиваем основной финтех-шрифт
 const jakartaSans = Plus_Jakarta_Sans({
@@ -31,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="ru" // Изменили язык на русский
-      className={`${jakartaSans.variable} ${spaceMono.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", jakartaSans.variable, spaceMono.variable, "font-sans", inter.variable)}
     >
       <body className="flex min-h-full flex-col bg-zinc-950 font-sans text-zinc-100">
         {children}
