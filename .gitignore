@@ -42,5 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 # 🔒 Исключаем локальные служебные файлы Supabase из репозитория
-.supabase/
-
+supabase/
