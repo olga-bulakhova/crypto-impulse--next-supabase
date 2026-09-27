@@ -1,5 +1,5 @@
 import { DashboardScreen } from '@/screen/DashboardScreen';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   return <DashboardScreen />;
 }
