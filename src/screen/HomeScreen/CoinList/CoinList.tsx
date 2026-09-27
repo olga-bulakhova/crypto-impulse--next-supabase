@@ -1,5 +1,7 @@
+import Link from 'next/link';
 import { CoinCard } from './CoinCard';
 import { CryptoStoreManager } from '@/storage';
+import { ROUTES } from '@/shared/constants';
 
 export const CoinList = async () => {
   const coins = await CryptoStoreManager.getCachedCoins();
@@ -26,9 +28,15 @@ export const CoinList = async () => {
         </span>
       </div>
 
-      <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4">
         {coins.map((coin) => (
-          <CoinCard key={coin.id} coin={coin} />
+          <Link
+            href={ROUTES.COIN(coin.id)}
+            key={coin.id}
+            className="block cursor-pointer"
+          >
+            <CoinCard coin={coin} />
+          </Link>
         ))}
       </div>
     </div>

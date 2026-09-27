@@ -1,3 +1,4 @@
+import { TrendBadge } from '@/shared/ui/TrendBadge';
 import type { CoinItem } from '@/storage';
 
 interface CoinCardProps {
@@ -8,6 +9,8 @@ export const CoinCard = ({ coin }: CoinCardProps) => {
   const changePercentage = coin.priceChange1d || 0;
   const isPositive = changePercentage >= 0;
   const isFlat = changePercentage === 0;
+  const variant =
+    changePercentage === 0 ? 'neutral' : changePercentage > 0 ? 'up' : 'down';
 
   return (
     <div
@@ -41,7 +44,6 @@ export const CoinCard = ({ coin }: CoinCardProps) => {
         </div>
       </div>
 
-      {/* НИЖНИЙ БЛОК: Стоимость + Живой процент изменения */}
       <div className="mt-4 flex items-end justify-between border-t border-zinc-900/40 pt-2">
         {/* Цена */}
         <span className="text-xs font-bold tracking-wider text-zinc-200">
@@ -54,20 +56,13 @@ export const CoinCard = ({ coin }: CoinCardProps) => {
         </span>
 
         {/* Изменение за 24 часа */}
-        <span
-          className={`flex items-center gap-1 rounded-md p-2 py-0.5 font-mono text-[11px] leading-none font-bold ${
-            changePercentage === 0
-              ? 'border border-amber-500/10 bg-amber-500/5 text-amber-500'
-              : isPositive
-                ? 'border border-cyan-500/10 bg-cyan-500/5 text-cyan-400'
-                : 'border border-red-500/10 bg-red-500/5 text-red-400'
-          }`}
-        >
+        <TrendBadge variant={variant} size="sm">
+          {/* Передаем стрелочку и текст прямо внутрь тегов, контролируя верстку! */}
           {changePercentage !== 0 && (
-            <span className="text-[11px]">{isPositive ? '▲' : '▼'}</span>
+            <span>{changePercentage > 0 ? '▲' : '▼'}</span>
           )}
           <span>{Math.abs(changePercentage).toFixed(2)}%</span>
-        </span>
+        </TrendBadge>
       </div>
     </div>
   );

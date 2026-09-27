@@ -69,6 +69,32 @@ export const CryptoStoreManager = {
   },
 
   /**
+   * 🔄 МЕТОД ПРИНУДИТЕЛЬНОГО ОБНОВЛЕНИЯ (Cache Invalidation)
+   * Игнорирует старый кэш, скачивает свежие данные и перезаписывает оперативную память.
+   */
+  async updateData(): Promise<CoinItem[]> {
+    console.log(
+      '[GLOBAL_STORE] Запущено принудительное ручное обновление данных котировок...',
+    );
+    try {
+      const response = await coinApi.getAll();
+      const freshCoins = response.result || [];
+
+      if (freshCoins.length > 0) {
+        this.setCachedCoins(freshCoins);
+      }
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error(
+        '[GLOBAL_STORE_UPDATE_ERROR] Не удалось принудительно обновить кэш:',
+        errorMessage,
+      );
+    }
+    return globalStore.cachedCoins;
+  },
+
+  /**
    * 🎯 МЕТОД ТОЧЕЧНОГО ЧТЕНИЯ: Находит конкретную монету по ID или Тикеру.
    * 🌟 ИСПРАВЛЕНО: Теперь вызывает асинхронный getCachedCoins(), гарантируя наличие данных! [5.2]
    */

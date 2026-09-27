@@ -30,9 +30,10 @@
     --radius: 0.625rem;
 
     /* Дополнительные HSL компоненты для совместимости */
-    --cyber-blue: 189 94% 53%;
-    --cyber-red: 0 84.2% 60.2%;
-    --cyber-amber: 38 92.2% 50%;
+    --cyber-blue: 21 213 250; 
+    --cyber-red: 239 52 52; 
+    --cyber-amber: 245 158 11;
+    --cyber-yellow: 255 190 0;
   }
 
   /* 🟢 ИСПРАВЛЕНО: Объединили системные медиа-запросы и переменные Vega oklch */
@@ -56,11 +57,6 @@
       --border: oklch(1 0 0 / 10%);
       --input: oklch(1 0 0 / 15%);
       --ring: oklch(0.556 0 0);
-
-      /* Наши фирменные неоновые кибер-цвета для темной темы */
-      --cyber-blue: 189 94% 53%;
-      --cyber-red: 0 84.2% 60.2%;
-      --cyber-amber: 38 92.2% 50%;
     }
   }
 
@@ -119,6 +115,11 @@
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
+
+  --color-brand-blue: rgb(var(--cyber-blue));
+  --color-brand-red: rgb(var(--cyber-red));
+  --color-brand-amber: rgb(var(--cyber-amber));
+  --color-brand-yellow: rgb(var(--cyber-yellow));
 
   --color-ring: var(--ring);
   --color-input: var(--input);
