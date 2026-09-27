@@ -1,22 +1,11 @@
-import React from 'react';
-
-// 📐 СТРОГИЙ ИНТЕРФЕЙС ДАННЫХ ДЛЯ ТИПИЗАЦИИ
-interface CoinItem {
-  id: string;
-  icon: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  price: number;
-  priceChange1d: number;
-}
+import type { CoinItem } from '@/storage';
 
 interface CoinCardProps {
   coin: CoinItem;
 }
 
 export const CoinCard = ({ coin }: CoinCardProps) => {
-  const changePercentage = parseFloat(coin.priceChange1d) || 0;
+  const changePercentage = coin.priceChange1d || 0;
   const isPositive = changePercentage >= 0;
   const isFlat = changePercentage === 0;
 
