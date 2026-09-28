@@ -1,5 +1,7 @@
 import type { CoinItem } from '@/storage';
 import { Table, TableBody, TableCell, TableRow } from '@/shared/ui/kit/table';
+import { Card } from '@/shared/ui/Card';
+import { CyberHeading } from '@/shared/ui/CyberHeading';
 
 interface CoinMetricsProps {
   coin: CoinItem;
@@ -53,11 +55,9 @@ export const CoinMetrics = ({ coin }: CoinMetricsProps) => {
   ];
 
   return (
-    <div className="flex h-full flex-col justify-between rounded-xl border border-zinc-900 bg-zinc-950/20 px-1 py-5 backdrop-blur-md md:px-5">
+    <Card padding="md">
       <div>
-        <h3 className="font-bolder mb-4 pb-2 pl-4 text-sm tracking-wider text-zinc-400 uppercase">
-          Рыночные метрики
-        </h3>
+        <CyberHeading className="mb-4 pb-2 pl-4">Рыночные метрики</CyberHeading>
 
         <Table>
           <TableBody>
@@ -67,7 +67,7 @@ export const CoinMetrics = ({ coin }: CoinMetricsProps) => {
                   <TableCell className="w-1/2 text-zinc-400">
                     {metric.label}
                   </TableCell>
-                  <TableCell className="w-1/2 items-center gap-0.5 text-right font-mono text-sm font-black text-white">
+                  <TableCell className="w-1/2 text-right font-mono text-sm text-white">
                     {metric.value}
                   </TableCell>
                 </TableRow>
@@ -76,6 +76,6 @@ export const CoinMetrics = ({ coin }: CoinMetricsProps) => {
           </TableBody>
         </Table>
       </div>
-    </div>
+    </Card>
   );
 };

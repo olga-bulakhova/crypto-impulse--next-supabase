@@ -83,9 +83,9 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
-          // 🌟 ИНТЕГРИРОВАНО: Дымчатое полупрозрачное стекло Vega с размытием
+          // 🌟 ИСПРАВЛЕНО: Изменили bg-zinc-950/85 на bg-zinc-900/90 для более светлого, контрастного стекла!
           className={cn(
-            'relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-xl border border-zinc-900 bg-zinc-950/95 text-zinc-300 shadow-2xl shadow-cyan-500/[0.03] backdrop-blur-xl duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+            'relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-xl border border-zinc-900 bg-zinc-900/90 text-zinc-300 shadow-2xl shadow-cyan-500/[0.03] backdrop-blur-xl duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
             className,
           )}
           {...props}
@@ -125,9 +125,9 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
-      // 🌟 ИНТЕГРИРОВАНО: Отрегулирован фокус и скругления элементов списка под финтех-стиль
+      // 🌟 ИСПРАВЛЕНО: Изменили focus:bg-zinc-900 на focus:bg-zinc-950/60 для создания глубокого, темного ховер-эффекта!
       className={cn(
-        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2 pr-8 pl-3 text-xs font-medium transition-colors outline-none select-none focus:bg-zinc-900 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2 pr-8 pl-3 text-xs font-medium transition-colors outline-none select-none focus:bg-zinc-950/60 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         className,
       )}
       {...props}

@@ -1,10 +1,10 @@
 import { CryptoStoreManager } from '@/storage';
-
 import { CoinHeader } from './ui/CoinHeader';
 import { CoinTimeframes } from './ui/CoinTimeframes';
 import { CoinMetrics } from './ui/CoinMetrics';
 import { CoinNotFound } from './ui/CoinNotFound';
 import { BackButton } from '@/shared/ui/BackButton';
+import { Container } from '@/shared/ui/Container';
 
 interface CoinDetailsScreenProps {
   coinId: string;
@@ -17,7 +17,7 @@ export const CoinDetailsScreen = async ({ coinId }: CoinDetailsScreenProps) => {
     return <CoinNotFound coinId={coinId} />;
   }
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 font-sans text-zinc-200 select-none">
+    <Container maxWidth="6xl">
       <div className="mb-6 px-1">
         <BackButton />
       </div>
@@ -28,6 +28,6 @@ export const CoinDetailsScreen = async ({ coinId }: CoinDetailsScreenProps) => {
         <CoinTimeframes coin={coin} />
         <CoinMetrics coin={coin} />
       </div>
-    </div>
+    </Container>
   );
 };

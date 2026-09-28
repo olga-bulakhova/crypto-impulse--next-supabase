@@ -6,7 +6,7 @@ interface CoinCardProps {
 }
 
 export const CoinCard = ({ coin }: CoinCardProps) => {
-  const changePercentage = coin.priceChange1d || 0;
+  const changePercentage = coin.priceChange1h || 0;
   const isPositive = changePercentage >= 0;
   const isFlat = changePercentage === 0;
   const variant =
@@ -35,7 +35,7 @@ export const CoinCard = ({ coin }: CoinCardProps) => {
           loading="lazy"
         />
         <div className="flex min-w-0 flex-col">
-          <span className="font-mono text-xs font-black tracking-widest text-white uppercase transition-colors group-hover:text-cyan-400">
+          <span className="font-mono text-xs font-black tracking-widest text-white uppercase transition-colors">
             {coin.symbol}
           </span>
           <span className="max-w-[65px] truncate text-[10px] font-medium tracking-wider text-zinc-500">

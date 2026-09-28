@@ -1,6 +1,8 @@
 import type { CoinItem } from '@/storage';
 import { Table, TableBody, TableCell, TableRow } from '@/shared/ui/kit/table';
 import { TrendBadge, type TrendBadgeVariant } from '@/shared/ui/TrendBadge';
+import { Card } from '@/shared/ui/Card';
+import { CyberHeading } from '@/shared/ui/CyberHeading';
 
 interface CoinTimeframesProps {
   coin: CoinItem;
@@ -28,10 +30,10 @@ export const CoinTimeframes = ({ coin }: CoinTimeframesProps) => {
   }
 
   return (
-    <div className="rounded-xl border border-zinc-900 bg-zinc-950/20 px-1 py-5 backdrop-blur-md md:px-5">
-      <h3 className="font-bolder mb-4 pb-2 pl-4 text-sm tracking-wider text-zinc-400 uppercase">
+    <Card padding="md">
+      <CyberHeading className="mb-4 pb-2 pl-4">
         Изменение стоимости по таймфреймам
-      </h3>
+      </CyberHeading>
 
       <Table>
         <TableBody>
@@ -46,16 +48,14 @@ export const CoinTimeframes = ({ coin }: CoinTimeframesProps) => {
                   {tf.label}
                 </TableCell>
                 <TableCell
-                  // 🟢 ИСПРАВЛЕНО: Раскладываем цвет текста на три независимых состояния палитры Vega
                   className={`w-1/2 items-center gap-0.5 text-right font-mono text-sm font-black ${
                     isFlat
-                      ? 'text-brand-yellow' // Чистый желтый для флэта
+                      ? 'text-brand-yellow'
                       : isPositive
-                        ? 'text-brand-blue' // Бирюзовый для роста
-                        : 'text-red-400' // Алый для падения
+                        ? 'text-brand-blue'
+                        : 'text-red-400'
                   }`}
                 >
-                  {/* 🟢 ИСПРАВЛЕНО: Стрелочка отображается только тогда, когда цена изменилась (не равна 0) */}
                   {!isFlat && (
                     <span className="pr-2">{isPositive ? '▲' : '▼'}</span>
                   )}
@@ -79,7 +79,6 @@ export const CoinTimeframes = ({ coin }: CoinTimeframesProps) => {
           </span>
         </div>
 
-        {/* Декларативно вызываем наш бейдж, передавая контент в children */}
         <TrendBadge variant={riskVariant} size="md">
           <div>
             <div className="font-sans text-xs font-extrabold tracking-wider whitespace-nowrap uppercase">
@@ -88,6 +87,6 @@ export const CoinTimeframes = ({ coin }: CoinTimeframesProps) => {
           </div>
         </TrendBadge>
       </div>
-    </div>
+    </Card>
   );
 };

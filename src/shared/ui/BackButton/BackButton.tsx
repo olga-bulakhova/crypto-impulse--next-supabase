@@ -8,24 +8,17 @@ interface BackButtonProps {
   fallbackHref?: string;
 }
 
-/**
- * 🛸 ИНТЕЛЛЕКТУАЛЬНЫЙ КЛИЕНТСКИЙ КОМПОНЕНТ: Ссылка возврата с анализом истории
- * Семантически верный тег <a> с перехватом события для умной навигации.
- */
 export const BackButton = ({ fallbackHref = '/' }: BackButtonProps) => {
   const router = useRouter();
 
-  // Строгая типизация события клика по ссылке без использования any
   const handleBack = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // 1. Блокируем стандартный жесткий переход по ссылке href
     e.preventDefault();
 
     try {
-      // 2. Проверяем, есть ли в браузере история переходов (длина стека больше 1)
       if (typeof window !== 'undefined' && window.history.length > 1) {
-        router.back(); // Возвращаем пользователя ровно туда, откуда он пришел
+        router.back();
       } else {
-        router.push(fallbackHref); // Если открыли вкладку напрямую — уводим на дефолтный роут
+        router.push(fallbackHref);
       }
     } catch (error: unknown) {
       console.error('[NAVIGATION_ERROR] Сбой возврата по истории:', error);
