@@ -4,6 +4,7 @@ import { UserMenu } from './UserMenu';
 import { ChevronIcon } from '@/shared/icons';
 import { Pill } from '@/shared/ui/Pill';
 import { useProfileDropdown } from '../model/useProfileDropdown';
+import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
 
 interface ProfileDropdownProps {
   avatarUrl?: string;
@@ -24,13 +25,9 @@ export const ProfileDropdown = ({
         className={isOpen ? 'border-cyan-500/30 text-white' : ''}
       >
         {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatarUrl}
-            alt={userName}
-            referrerPolicy="no-referrer"
-            className="h-6 w-6 rounded-full border border-zinc-700 bg-zinc-800 object-cover transition-colors group-hover:border-cyan-400/50"
-          />
+          <Avatar className="h-5 w-5">
+            <AvatarImage src={avatarUrl} alt={userName} />
+          </Avatar>
         ) : (
           <div className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-[10px] font-bold text-cyan-400">
             {userName.toUpperCase()}
