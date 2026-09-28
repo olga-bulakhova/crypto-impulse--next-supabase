@@ -18,6 +18,7 @@ export interface FormattedAsset extends Asset {
   totalAmount: number;
   currentTotalAmount: number;
   totalProfit: number;
+  icon: string;
 }
 
 // Временный мок данных активов
@@ -31,7 +32,7 @@ const assets: Asset[] = [
   {
     id: 'ethereum',
     amount: 5,
-    price: 3400,
+    price: 2700,
     date: new Date(),
   },
 ];
@@ -77,6 +78,7 @@ export async function getPortfolioData(): Promise<FormattedAsset[]> {
     return {
       ...asset,
       name: coin?.name || asset.id,
+      icon: coin?.icon || '',
       color: coin?.color || 'ffffff',
       symbol: coinSymbol,
       grow: isGrowing,

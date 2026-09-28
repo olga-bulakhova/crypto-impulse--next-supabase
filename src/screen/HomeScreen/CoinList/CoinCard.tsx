@@ -1,3 +1,4 @@
+import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
 import { TrendBadge } from '@/shared/ui/TrendBadge';
 import type { CoinItem } from '@/storage';
 
@@ -6,7 +7,7 @@ interface CoinCardProps {
 }
 
 export const CoinCard = ({ coin }: CoinCardProps) => {
-  const changePercentage = coin.priceChange1h || 0;
+  const changePercentage = coin.priceChange1d || 0;
   const isPositive = changePercentage >= 0;
   const isFlat = changePercentage === 0;
   const variant =
@@ -27,13 +28,9 @@ export const CoinCard = ({ coin }: CoinCardProps) => {
       </span>
 
       <div className="flex items-center gap-2.5">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={coin.icon}
-          alt={coin.name}
-          className="h-8 w-8 rounded-full border border-zinc-800/60 bg-zinc-900 object-cover transition-transform duration-300 group-hover:rotate-[12deg]"
-          loading="lazy"
-        />
+        <Avatar className="transition-transform duration-200 group-hover:rotate-[12deg]">
+          <AvatarImage src={coin.icon} alt={coin.name} />
+        </Avatar>
         <div className="flex min-w-0 flex-col">
           <span className="font-mono text-xs font-black tracking-widest text-white uppercase transition-colors">
             {coin.symbol}
@@ -55,9 +52,7 @@ export const CoinCard = ({ coin }: CoinCardProps) => {
               })}
         </span>
 
-        {/* Изменение за 24 часа */}
         <TrendBadge variant={variant} size="sm">
-          {/* Передаем стрелочку и текст прямо внутрь тегов, контролируя верстку! */}
           {changePercentage !== 0 && (
             <span>{changePercentage > 0 ? '▲' : '▼'}</span>
           )}

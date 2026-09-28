@@ -1,3 +1,4 @@
+import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
 import { TrendBadge } from '@/shared/ui/TrendBadge';
 import type { CoinItem } from '@/storage';
 
@@ -9,12 +10,9 @@ export const CoinHeader = ({ coin }: CoinHeaderProps) => {
   return (
     <div className="mb-7 flex flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={coin.icon}
-          alt={coin.name}
-          className="h-12 w-12 rounded-full border border-zinc-800 bg-zinc-900 object-cover shadow-[0_0_20px_rgba(255,255,255,0.02)]"
-        />
+        <Avatar className="h-12 w-12">
+          <AvatarImage src={coin.icon} alt={coin.name} />
+        </Avatar>
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <h1

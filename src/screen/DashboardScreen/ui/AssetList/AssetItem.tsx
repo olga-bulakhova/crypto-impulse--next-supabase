@@ -1,8 +1,9 @@
 import { Card } from '@/shared/ui/Card';
 import { TrendBadge } from '@/shared/ui/TrendBadge';
-import type { FormattedAsset } from '../model/getPortfolioData';
+import type { FormattedAsset } from '../../model/getPortfolioData';
 import { Table, TableBody, TableCell, TableRow } from '@/shared/ui/kit/table';
 import { formatCryptoPrice } from '@/shared/lib';
+import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
 
 interface AssetItemProps {
   asset: FormattedAsset;
@@ -31,8 +32,15 @@ export const AssetItem = ({ asset }: AssetItemProps) => {
 
   return (
     <Card padding="sm">
-      <div className="pt-2 pl-4" style={{ color: `#${asset.color}` }}>
-        {asset.name}
+      <div
+        className="flex items-center gap-3 pt-1 pl-4"
+        style={{ color: `#${asset.color}` }}
+      >
+        <Avatar>
+          <AvatarImage src={asset.icon} alt={asset.name} />
+        </Avatar>
+
+        <span>{asset.name}</span>
       </div>
 
       <Table>
@@ -57,7 +65,9 @@ export const AssetItem = ({ asset }: AssetItemProps) => {
               </TrendBadge>
               <span
                 className={
-                  asset.totalProfit >= 0 ? 'text-brand-blue' : 'text-brand-red'
+                  asset.totalProfit >= 0
+                    ? 'font-bold text-brand-blue'
+                    : 'font-bold text-brand-red'
                 }
               >
                 {formatCryptoPrice(asset.totalProfit)}

@@ -1,7 +1,7 @@
 import { getPortfolioData } from './model/getPortfolioData';
-import { AssetList } from './ui/AssetList';
 import { CyberHeading } from '@/shared/ui/CyberHeading';
 import { Container } from '@/shared/ui/Container';
+import { AssetList } from './ui/AssetList';
 
 export const DashboardScreen = async () => {
   const formattedAssets = await getPortfolioData();

@@ -1,5 +1,7 @@
-import type { FormattedAsset } from '../model/getPortfolioData';
+
+import type { FormattedAsset } from '../../model/getPortfolioData';
 import { AssetItem } from './AssetItem';
+
 
 interface AssetListProps {
   assets: FormattedAsset[];
