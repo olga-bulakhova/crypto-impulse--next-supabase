@@ -21,7 +21,6 @@ function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
-      // 🟢 ИСПРАВЛЕНО: Добавлен font-mono для отображаемого внутри инпута текста
       className={cn('flex flex-1 text-left font-mono tracking-wide', className)}
       {...props}
     />
@@ -40,9 +39,8 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
-      // 🟢 ИСПРАВЛЕНО: Заменен класс text-sm на font-mono text-sm tracking-wide для идеального соответствия Input
       className={cn(
-        'flex w-full items-center justify-between gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/50 py-1.5 pr-3 pl-3 font-mono text-sm text-zinc-200 shadow-xs transition-colors outline-none focus:border-cyan-500/30 focus:outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-brand-red data-placeholder:text-zinc-500 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5',
+        'flex w-full items-center justify-between gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/50 py-1.5 pr-3 pl-3 font-mono text-sm text-zinc-200 shadow-xs transition-colors outline-none focus:border-cyan-500/30 focus:outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-brand-red data-placeholder:text-zinc-500 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5',
         className,
       )}
       {...props}
@@ -126,9 +124,8 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
-      // 🟢 ИСПРАВЛЕНО: Изменен класс text-xs на font-mono text-xs tracking-wide для строк выпадающего списка
       className={cn(
-        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2 pr-8 pl-3 font-mono text-xs font-medium transition-colors outline-none select-none focus:bg-zinc-950/60 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        "relative flex w-full cursor-pointer items-center gap-2 rounded-full py-2 pr-8 pl-3 font-mono text-xs font-medium transition-colors outline-none select-none focus:bg-zinc-950/60 focus:text-white data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         className,
       )}
       {...props}
