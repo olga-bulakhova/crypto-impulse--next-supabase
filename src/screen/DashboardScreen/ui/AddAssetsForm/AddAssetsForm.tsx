@@ -1,6 +1,6 @@
 'use client';
 
-import  { useEffect } from 'react';
+import { useEffect } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -8,6 +8,8 @@ import { FieldGroup } from '@/shared/ui/kit/field';
 import { FormInput, FormSelect } from '@/shared/ui/form';
 import { Button } from '@/shared/ui/Button';
 import { FormDatePicker } from '@/shared/ui/form/FormDatePicker';
+import { useRouter } from 'next/navigation';
+import { addAssetToPortfolioAction } from '../../model';
 
 interface CoinOption {
   value: string;
@@ -34,20 +36,23 @@ const schema = z.object({
 
 type Inputs = z.infer<typeof schema>;
 
+const defaultValues: Inputs = {
+  coinId: '',
+  amount: 0,
+  price: 0,
+  date: new Date(),
+  total: 0,
+};
+
 export const AddAssetsForm = ({
   coinOptions,
   onSuccess,
 }: AddAssetsFormProps) => {
   const form = useForm<Inputs>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      coinId: '',
-      amount: 0,
-      price: 0,
-      date: new Date(),
-      total: 0,
-    },
+    defaultValues,
   });
+  const router = useRouter();
 
   const watchedCoinId = form.watch('coinId');
   const watchedAmount = form.watch('amount');
@@ -76,12 +81,37 @@ export const AddAssetsForm = ({
     form.setValue('total', calculatedTotal, { shouldValidate: true });
   }, [watchedAmount, watchedPrice, form]);
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      console.log('📥 Данные новой транзакции портфеля:', data);
+      console.log('📥 Клиент инициирует отправку формы:', data);
+
+      // 🟢 ШАГ 1: Вызываем серверное действие для физической записи в globalThis [5.2]
+      await addAssetToPortfolioAction({
+        coinId: data.coinId,
+        amount: data.amount,
+        price: data.price,
+        date: data.date,
+      });
+
+      console.log(
+        '✅ Данные успешно запечатаны в UserAssetsStorage на сервере!',
+      );
+
+      // 🟢 ШАГ 2: Сообщаем роутеру Next.js, что серверные компоненты портфеля нужно перерендерить [5.2]
+      router.refresh();
+
+      // Очищаем форму, возвращая её в исходное чистое состояние
+      form.reset(defaultValues);
+
+      // Триггерим закрытие шторки сайдбара наружу
       if (onSuccess) onSuccess();
     } catch (error: unknown) {
-      console.error('[FORM_SUBMIT_ERROR] Сбой добавления актива:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error(
+        '[FORM_SUBMIT_ERROR] Сбой добавления актива:',
+        errorMessage,
+      );
     }
   };
 
