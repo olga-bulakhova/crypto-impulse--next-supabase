@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import  { useEffect } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { FieldGroup } from '@/shared/ui/kit/field';
 import { FormInput, FormSelect } from '@/shared/ui/form';
 import { Button } from '@/shared/ui/Button';
+import { FormDatePicker } from '@/shared/ui/form/FormDatePicker';
 
-// 📐 Расширяем интерфейс опции монеты, чтобы клиентская форма знала текущую рыночную цену
 interface CoinOption {
   value: string;
   label: string;
-  livePrice: number; // 🟢 ДОБАВЛЕНО: Живой курс монеты из кэша API
+  livePrice: number;
 }
 
 interface AddAssetsFormProps {
@@ -28,6 +28,7 @@ const schema = z.object({
   price: z
     .number({ message: 'Введите число' })
     .min(0.01, { message: 'Минимум $0.01' }),
+  date: z.date({ message: 'Выберите дату операции' }),
   total: z.number({ message: 'Введите число' }),
 });
 
@@ -43,6 +44,7 @@ export const AddAssetsForm = ({
       coinId: '',
       amount: 0,
       price: 0,
+      date: new Date(),
       total: 0,
     },
   });
@@ -51,7 +53,6 @@ export const AddAssetsForm = ({
   const watchedAmount = form.watch('amount');
   const watchedPrice = form.watch('price');
 
-  // 🟢 1. АВТОПОДСТАНОВКА КУРСА: При выборе монеты мгновенно подтягиваем её текущую цену
   useEffect(() => {
     if (!watchedCoinId) return;
 
@@ -95,7 +96,7 @@ export const AddAssetsForm = ({
           control={form.control}
           label="Криптовалюта"
           options={coinOptions}
-          placeholder="Выберите монету из кэша"
+          placeholder="Выберите монету"
         />
 
         <FormInput
@@ -114,6 +115,12 @@ export const AddAssetsForm = ({
           control={form.control}
           label="Цена покупки ($ USD)"
           placeholder="Например: 75244"
+        />
+
+        <FormDatePicker
+          name="date"
+          control={form.control}
+          label="Дата совершения сделки"
         />
 
         <FormInput
