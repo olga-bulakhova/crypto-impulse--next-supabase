@@ -7,12 +7,12 @@ import type { FormattedAsset } from '../../model/getPortfolioData';
 import { Table, TableBody, TableCell, TableRow } from '@/shared/ui/kit/table';
 import { formatCryptoPrice } from '@/shared/lib';
 import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
-import { Button } from '@/shared/ui/Button'; // Используем нашу готовую стеклянную кнопку
+import { Button } from '@/shared/ui/Button';
 import { TrashIcon } from '@/shared/icons';
 
 interface AssetItemProps {
   asset: FormattedAsset;
-  onDelete?: (id: string) => Promise<void> | void; // 🟢 ДОБАВЛЕНО: Строго типизированный колбэк удаления
+  onDelete?: (id: string) => Promise<void> | void;
 }
 
 const TableItem = ({
@@ -41,19 +41,15 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
     if (!onDelete) return;
     try {
       setIsDeleting(true);
-      await onDelete(asset.id); // Вызываем колбэк с UUID транзакции
+      await onDelete(asset.id);
     } catch (error: unknown) {
       console.error('[DELETE_ASSET_ERROR]', error);
-      setIsDeleting(false); // Сбрасываем лоадер в случае сбоя
+      setIsDeleting(false);
     }
   };
 
   return (
-    /* 🟢 ИСПРАВЛЕНО: Добавлен исключительно класс relative для привязки угла, ваши исходные паддинги сохранены */
     <Card padding="sm" className="relative pr-2">
-      {/* 🟢 ДОБАВЛЕНО: Стеклянная кнопка-корзина в правом верхнем углу.
-          Она идеально отцентрирована абсолютно, не ломает текущие строки и содержит асинхронный лоадер-спиннер! */}
-
       <Button
         type="button"
         variant="danger"
