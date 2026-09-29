@@ -1,17 +1,17 @@
 
 import type { FormattedAsset } from '../../model/getPortfolioData';
-import { AssetItem } from './AssetItem';
+import { AssetsItem } from './AssetsItem';
 
 
-interface AssetListProps {
+interface AssetsListProps {
   assets: FormattedAsset[];
 }
 
-export const AssetList = ({ assets }: AssetListProps) => {
+export const AssetsList = ({ assets }: AssetsListProps) => {
   return (
     <div className="grid grid-cols-1 gap-3">
       {assets.map((asset: FormattedAsset) => (
-        <AssetItem key={asset.id} asset={asset} />
+        <AssetsItem key={asset.id} asset={asset} />
       ))}
     </div>
   );

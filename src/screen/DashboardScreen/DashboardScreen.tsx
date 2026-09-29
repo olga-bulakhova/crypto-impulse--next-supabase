@@ -1,8 +1,10 @@
 import { getPortfolioData } from './model/getPortfolioData';
 import { CyberHeading } from '@/shared/ui/CyberHeading';
 import { Container } from '@/shared/ui/Container';
-import { AssetList } from './ui/AssetList';
-import { AddAssetDrawer } from './ui/AddAsset';
+import { AssetsList } from './ui/AssetsList';
+import { ResponsiveSidebar } from '@/shared/ui/ResponsiveSidebar';
+import { Button } from '@/shared/ui/Button';
+import { AddAssetsForm } from './ui/AddAssetsForm';
 
 export const DashboardScreen = async () => {
   const formattedAssets = await getPortfolioData();
@@ -13,11 +15,23 @@ export const DashboardScreen = async () => {
         <CyberHeading as="h1">
           Баланс и текущее состояние вашего крипто-портфеля
         </CyberHeading>
-        <AddAssetDrawer />
+        <ResponsiveSidebar
+          title="Добавить новый актив"
+          description="Зафиксируйте объем и стоимость покупки монеты в вашем портфеле"
+          trigger={
+            <Button size="sm" variant="amber">
+              Добавить актив
+            </Button>
+          }
+        >
+          <div className="p-2">
+            <AddAssetsForm />
+          </div>
+        </ResponsiveSidebar>
       </div>
       <div className="grid grid-cols-1 gap-2.5 md:grid-cols-5">
         <div className="md:col-span-2">
-          <AssetList assets={formattedAssets} />
+          <AssetsList assets={formattedAssets} />
         </div>
 
         <div className="md:col-span-3">

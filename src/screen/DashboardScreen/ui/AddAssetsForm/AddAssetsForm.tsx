@@ -16,7 +16,7 @@ const schema = z.object({
 
 type Inputs = z.infer<typeof schema>;
 
-export const AddAssetForm = () => {
+export const AddAssetsForm = () => {
   const form = useForm({
     resolver: zodResolver(schema),
   });

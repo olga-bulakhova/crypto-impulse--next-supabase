@@ -1,2 +1,2 @@
-export type { CoinItem } from './coins/coinsTypes';
-export { CryptoStoreManager } from './coins/coinsStore';
+export type { CoinItem } from './crypto/cryptoTypes';
+export { CryptoStoreManager } from './crypto/cryptoStore';

@@ -1,10 +1,15 @@
 import { coinApi } from '@/shared/api/coin-api'; // 🌟 Импортируем наш зафиксированный API-сервис
-import type { CoinItem } from './coinsTypes';
+import type { CoinItem } from './cryptoTypes';
 
 // 📐 1. Описываем строгий интерфейс для нашего внутреннего хранилища
 interface CryptoRadarStorage {
   lastScanTime: string | null;
   cachedCoins: CoinItem[];
+}
+
+export interface SelectOption {
+  label: string;
+  value: string;
 }
 
 // 🛡️ 2. РАСШИРЯЕМ ГЛОБАЛЬНЫЙ ИНТЕРФЕЙС ТИПОВ (Без any для ESLint)
@@ -116,6 +121,18 @@ export const CryptoStoreManager = {
   /**
    * ⏱️ МЕТОД КОНТРОЛЯ ВРЕМЕНИ: Отдает метку времени последнего сканирования
    */
+
+  async getCoinsForSelect(): Promise<SelectOption[]> {
+    // 1. Извлекаем массив монет (метод сам автоматически прогреет кэш, если сервер только запустился) [5.2]
+    const coins = await this.getCachedCoins();
+
+    // 2. Трансформируем данные в формат { label: name, value: id } с сортировкой по рангу рынка
+    return coins.map((coin) => ({
+      label: `${coin.name} (${coin.symbol.toUpperCase()})`, // Выведет красиво: "Bitcoin (BTC)"
+      value: coin.id.toLowerCase(), // Передаем уникальный id в качестве value
+    }));
+  },
+
   getLastScanTime(): string | null {
     return globalStore.lastScanTime;
   },

@@ -26,7 +26,7 @@ const TableItem = ({
   );
 };
 
-export const AssetItem = ({ asset }: AssetItemProps) => {
+export const AssetsItem = ({ asset }: AssetItemProps) => {
   const badgeVariant =
     asset.growPercent === 0 ? 'neutral' : asset.grow ? 'up' : 'down';
 
