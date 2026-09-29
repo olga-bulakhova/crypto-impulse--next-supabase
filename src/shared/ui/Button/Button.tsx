@@ -68,26 +68,16 @@ export const Button = ({
     size === 'sm' ? 'h-3.5 w-3.5 border-2' : 'h-4 w-4 border-2';
 
   // Рендеринг контента внутри кнопки (с поддержкой лоадера-спиннера и иконок)
+  // Рендеринг контента внутри кнопки (с поддержкой лоадера-спиннера и иконок)
   const content = (
     <>
       {isLoading ? (
         <>
           <span
-            className={`${spinnerSize} animate-spin rounded-full border-t-transparent ${
-              variant === 'base'
-                ? 'border-zinc-400'
-                : variant === 'cyber'
-                  ? 'border-cyan-400'
-                  : variant === 'amber'
-                    ? 'border-amber-500'
-                    : variant === 'yellow'
-                      ? 'border-[oklch(var(--cyber-yellow))]'
-                      : 'border-red-400'
-            }`}
+            // 🟢 ИСПРАВЛЕНО: Заменили border-t-transparent на классический круговой спиннер с мягкой подложкой border-current/10
+            className={`${spinnerSize} animate-spin rounded-full border-2 border-current/10 border-t-current`}
           />
-          <span className="text-2xs font-mono tracking-wide uppercase">
-            {loadingText || children}
-          </span>
+          {size !== 'sm' && <span>{loadingText || children}</span>}
         </>
       ) : (
         <>

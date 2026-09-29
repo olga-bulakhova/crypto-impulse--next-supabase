@@ -80,28 +80,21 @@ export const AddAssetsForm = ({ coinOptions }: AddAssetsFormProps) => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      console.log('📥 Клиент инициирует отправку формы:', data);
-
-      // 🟢 ШАГ 1: Вызываем серверное действие для физической записи в globalThis [5.2]
       await addAssetToPortfolioAction({
         coinId: data.coinId,
         amount: data.amount,
         price: data.price,
         date: data.date,
-      });
+      } as Parameters<typeof addAssetToPortfolioAction>[0]); // Автоматически берет тип первого аргумента экшена!
 
       console.log(
         '✅ Данные успешно запечатаны в UserAssetsStorage на сервере!',
       );
 
-      // 🟢 ШАГ 2: Сообщаем роутеру Next.js, что серверные компоненты портфеля нужно перерендерить [5.2]
       router.refresh();
       setIsSuccess(true);
 
-      // Очищаем форму, возвращая её в исходное чистое состояние
       form.reset(defaultValues);
-
-      // Триггерим закрытие шторки сайдбара наружу
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);

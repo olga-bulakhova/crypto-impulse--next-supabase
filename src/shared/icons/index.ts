@@ -4,3 +4,4 @@ export * from './ChevronIcon';
 export * from './DashboardIcon';
 export * from './LogoutIcon';
 export * from './UserGuestIcon';
+export * from './TrashIcon';

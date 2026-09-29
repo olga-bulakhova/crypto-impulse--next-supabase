@@ -16,32 +16,27 @@ export interface FormattedAsset extends Asset {
   icon: string;
 }
 
-/**
- * 🤖 СЕРВЕРНАЯ ФУНКЦИЯ ТРАНСФОРМАЦИИ: Полный расчет доходности портфеля
- * Спецификация: Чистая серверная утилита бизнес-логики (БЕЗ использования use...) [5.2].
- */
 export async function getPortfolioData(): Promise<FormattedAsset[]> {
-  // 1. Параллельно извлекаем кэшированные монеты и список активов пользователя [5.2]
   const [coins, liveAssets] = await Promise.all([
     CryptoStoreManager.getCachedCoins(),
-    AssetsStorageManager.getAssets(), // Вызов нашего нового менеджера
+    AssetsStorageManager.getAssets(),
   ]);
 
-  // Переводим массив монет в Map для мгновенного поиска за O(1)
   const coinsMap = new Map<string, CoinItem>(
     coins.map((coin) => [coin.id.toLowerCase(), coin]),
   );
 
-  // 📊 2. Трансформируем активы с расчетом доходности
   return liveAssets.map((asset) => {
-    const coin = coinsMap.get(asset.id.toLowerCase());
+    const coin = coinsMap.get(asset.coinId.toLowerCase());
+
     const currentPrice = coin?.price ?? 0;
-    const coinSymbol = coin?.symbol?.toUpperCase() || asset.id.toUpperCase();
+
+    const coinSymbol =
+      coin?.symbol?.toUpperCase() || asset.coinId.toUpperCase();
 
     let isGrowing = false;
     let growPercent = 0;
 
-    // Защита от деления на ноль и пустых значений
     if (currentPrice > 0 && asset.price > 0) {
       isGrowing = currentPrice > asset.price;
       growPercent = Math.abs(
@@ -54,7 +49,7 @@ export async function getPortfolioData(): Promise<FormattedAsset[]> {
 
     return {
       ...asset,
-      name: coin?.name || asset.id,
+      name: coin?.name || asset.coinId,
       icon: coin?.icon || '',
       color: coin?.color || 'ffffff',
       symbol: coinSymbol,
