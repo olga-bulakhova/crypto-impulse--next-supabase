@@ -128,8 +128,9 @@ export const CryptoStoreManager = {
 
     // 2. Трансформируем данные в формат { label: name, value: id } с сортировкой по рангу рынка
     return coins.map((coin) => ({
-      label: `${coin.name} (${coin.symbol.toUpperCase()})`, // Выведет красиво: "Bitcoin (BTC)"
-      value: coin.id.toLowerCase(), // Передаем уникальный id в качестве value
+      label: `${coin.name} (${coin.symbol.toUpperCase()})`,
+      value: coin.id.toLowerCase(),
+      livePrice: coin.price || 0, // 🟢 ДОБАВЛЕНО: Прокидываем текущую живую цену из кэша!
     }));
   },
 

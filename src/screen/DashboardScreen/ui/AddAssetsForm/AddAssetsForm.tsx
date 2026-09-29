@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -8,9 +8,11 @@ import { FieldGroup } from '@/shared/ui/kit/field';
 import { FormInput, FormSelect } from '@/shared/ui/form';
 import { Button } from '@/shared/ui/Button';
 
+// 📐 Расширяем интерфейс опции монеты, чтобы клиентская форма знала текущую рыночную цену
 interface CoinOption {
   value: string;
   label: string;
+  livePrice: number; // 🟢 ДОБАВЛЕНО: Живой курс монеты из кэша API
 }
 
 interface AddAssetsFormProps {
@@ -26,9 +28,7 @@ const schema = z.object({
   price: z
     .number({ message: 'Введите число' })
     .min(0.01, { message: 'Минимум $0.01' }),
-  total: z
-    .number({ message: 'Введите число' })
-    .min(0.01, { message: 'Минимум $0.01' }),
+  total: z.number({ message: 'Введите число' }),
 });
 
 type Inputs = z.infer<typeof schema>;
@@ -47,9 +47,26 @@ export const AddAssetsForm = ({
     },
   });
 
+  const watchedCoinId = form.watch('coinId');
   const watchedAmount = form.watch('amount');
   const watchedPrice = form.watch('price');
 
+  // 🟢 1. АВТОПОДСТАНОВКА КУРСА: При выборе монеты мгновенно подтягиваем её текущую цену
+  useEffect(() => {
+    if (!watchedCoinId) return;
+
+    // Ищем выбранную монету в переданных сверху опциях
+    const selectedCoin = coinOptions.find(
+      (coin) => coin.value === watchedCoinId,
+    );
+
+    if (selectedCoin) {
+      // Автоматически устанавливаем живую цену в инпут price
+      form.setValue('price', selectedCoin.livePrice, { shouldValidate: true });
+    }
+  }, [watchedCoinId, coinOptions, form]);
+
+  // 🔄 2. АВТОМАТИЧЕСКИЙ ПЕРЕСЧЕТ: Total = Amount * Price
   useEffect(() => {
     const amount = Number(watchedAmount) || 0;
     const price = Number(watchedPrice) || 0;
@@ -61,7 +78,6 @@ export const AddAssetsForm = ({
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     try {
       console.log('📥 Данные новой транзакции портфеля:', data);
-
       if (onSuccess) onSuccess();
     } catch (error: unknown) {
       console.error('[FORM_SUBMIT_ERROR] Сбой добавления актива:', error);
@@ -90,6 +106,7 @@ export const AddAssetsForm = ({
           label="Количество монет (Amount)"
           placeholder="Например: 0.025"
         />
+
         <FormInput
           name="price"
           type="number"
