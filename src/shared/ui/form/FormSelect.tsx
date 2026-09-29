@@ -42,7 +42,6 @@ export function FormSelect<TFieldValues extends FieldValues>({
       name={name}
       control={control}
       render={({ field: { onChange, value }, fieldState }) => {
-        // Находим активный label для отображения в триггеры
         const selectedOption = options.find((option) => option.value === value);
         const displayLabel = selectedOption
           ? selectedOption.label
@@ -50,13 +49,15 @@ export function FormSelect<TFieldValues extends FieldValues>({
 
         return (
           <Field
-            // 🌟 ИСПРАВЛЕНО: Добавили relative и pb-4 для бронирования места под ошибку (форма больше не прыгает)
             className="relative flex flex-col gap-1.5 pb-4"
             data-invalid={fieldState.invalid}
           >
             <FieldLabel htmlFor={generatedId}>{label}</FieldLabel>
 
-            <Select value={value ?? ''} onValueChange={onChange}>
+            <Select
+              value={value ?? ''}
+              onValueChange={(val) => onChange(val ?? '')}
+            >
               <SelectTrigger id={generatedId} aria-invalid={fieldState.invalid}>
                 <SelectValue placeholder={placeholder}>
                   {displayLabel}
@@ -72,10 +73,9 @@ export function FormSelect<TFieldValues extends FieldValues>({
               </SelectContent>
             </Select>
 
-            {/* 🌟 ИСПРАВЛЕНО: Перевели ошибку в абсолютное позиционирование в самый низ контейнера */}
             {fieldState.invalid && fieldState.error && (
               <FieldError
-                className="absolute top-15 left-0 animate-in text-[11px] leading-tight font-medium text-red-500 duration-200 select-none fade-in"
+                className="absolute -bottom-1 left-0 animate-in text-[11px] leading-tight font-medium duration-200 select-none fade-in"
                 errors={[fieldState.error]}
               >
                 {fieldState.error.message}

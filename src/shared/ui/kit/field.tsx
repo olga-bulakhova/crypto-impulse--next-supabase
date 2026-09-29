@@ -107,7 +107,7 @@ function FieldLabel({
       data-slot="field-label"
       className={cn(
         // 🌟 ИСПРАВЛЕНО: Уменьшили размер шрифта до text-[11px] и добавили tracking-wide
-        'group/field-label peer/field-label flex w-fit gap-2 text-[11px] leading-snug font-normal tracking-wide text-zinc-400 group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-slot=field]]:has-[:focus-visible]:border-ring has-[>[data-slot=field]]:has-[:focus-visible]:ring-3 has-[>[data-slot=field]]:has-[:focus-visible]:ring-ring/50 *:data-[slot=field]:p-3 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10',
+        'group/field-label peer/field-label flex w-fit gap-2 text-[12px] leading-snug font-normal tracking-wide text-zinc-400 group-data-[disabled=true]/field:opacity-50 has-data-checked:border-primary/30 has-data-checked:bg-primary/5 has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-muted/50 has-[>[data-slot=field]]:has-[:focus-visible]:border-ring has-[>[data-slot=field]]:has-[:focus-visible]:ring-3 has-[>[data-slot=field]]:has-[:focus-visible]:ring-ring/50 *:data-[slot=field]:p-3 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10',
         'has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col',
         // Гарантируем стабильный цвет заголовка в любых состояниях формы
         'group-data-[invalid=true]/field:text-zinc-400 dark:group-data-[invalid=true]/field:text-zinc-400 [&_span]:text-zinc-400',
@@ -117,7 +117,6 @@ function FieldLabel({
     />
   );
 }
-
 
 function FieldTitle({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -220,7 +219,7 @@ function FieldError({
     <div
       role="alert"
       data-slot="field-error"
-      className={cn('text-sm font-normal text-destructive', className)}
+      className={cn('text-xs font-normal text-brand-red', className)}
       {...props}
     >
       {content}

@@ -30,8 +30,8 @@
     --radius: 0.625rem;
 
     /* Дополнительные HSL компоненты для совместимости */
-    --cyber-blue: 21 213 250; 
-    --cyber-red: 239 52 52; 
+    --cyber-blue: 21 213 250;
+    --cyber-red: 248 113 113;
     --cyber-amber: 245 158 11;
     --cyber-yellow: 255 190 0;
   }

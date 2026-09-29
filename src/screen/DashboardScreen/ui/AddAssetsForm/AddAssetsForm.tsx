@@ -1,30 +1,123 @@
 'use client';
 
+import { useEffect } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { FieldGroup } from '@/shared/ui/kit/field';
+import { FormInput, FormSelect } from '@/shared/ui/form';
+import { Button } from '@/shared/ui/Button';
+
+interface CoinOption {
+  value: string;
+  label: string;
+}
+
+interface AddAssetsFormProps {
+  coinOptions: CoinOption[];
+  onSuccess?: () => void;
+}
 
 const schema = z.object({
-  coinId: z.string().nonempty({ message: '' }),
-
-  amount: z.number({ message: '' }).min(0.01, { message: '' }),
-
-  price: z.number({ message: '' }).min(0.01, { message: '' }),
-
-  total: z.number({ message: '' }).min(0.01, { message: '' }),
+  coinId: z.string().min(1, { message: 'Выберите криптовалюту' }),
+  amount: z
+    .number({ message: 'Введите число' })
+    .min(0.000001, { message: 'Минимум 0.000001' }),
+  price: z
+    .number({ message: 'Введите число' })
+    .min(0.01, { message: 'Минимум $0.01' }),
+  total: z
+    .number({ message: 'Введите число' })
+    .min(0.01, { message: 'Минимум $0.01' }),
 });
 
 type Inputs = z.infer<typeof schema>;
 
-export const AddAssetsForm = () => {
-  const form = useForm({
+export const AddAssetsForm = ({
+  coinOptions,
+  onSuccess,
+}: AddAssetsFormProps) => {
+  const form = useForm<Inputs>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      coinId: '',
+      amount: 0,
+      price: 0,
+      total: 0,
+    },
   });
 
+  const watchedAmount = form.watch('amount');
+  const watchedPrice = form.watch('price');
 
-    const onSubmit: SubmitHandler<Inputs> =  (data) => {
-       console.log(data);
-    };
+  useEffect(() => {
+    const amount = Number(watchedAmount) || 0;
+    const price = Number(watchedPrice) || 0;
+    const calculatedTotal = Number((amount * price).toFixed(2));
 
-  return <div>AddAssetForm</div>;
+    form.setValue('total', calculatedTotal, { shouldValidate: true });
+  }, [watchedAmount, watchedPrice, form]);
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    try {
+      console.log('📥 Данные новой транзакции портфеля:', data);
+
+      if (onSuccess) onSuccess();
+    } catch (error: unknown) {
+      console.error('[FORM_SUBMIT_ERROR] Сбой добавления актива:', error);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="flex flex-col gap-5 font-sans"
+    >
+      <FieldGroup className="gap-4">
+        <FormSelect
+          name="coinId"
+          control={form.control}
+          label="Криптовалюта"
+          options={coinOptions}
+          placeholder="Выберите монету из кэша"
+        />
+
+        <FormInput
+          name="amount"
+          type="number"
+          step="any"
+          control={form.control}
+          label="Количество монет (Amount)"
+          placeholder="Например: 0.025"
+        />
+        <FormInput
+          name="price"
+          type="number"
+          step="any"
+          control={form.control}
+          label="Цена покупки ($ USD)"
+          placeholder="Например: 75244"
+        />
+
+        <FormInput
+          name="total"
+          type="number"
+          control={form.control}
+          label="Всего потрачено ($ USD)"
+          placeholder="Рассчитывается автоматически"
+          disabled={true}
+        />
+      </FieldGroup>
+
+      <Button
+        type="submit"
+        variant="cyber"
+        className="mt-2 w-full"
+        isLoading={form.formState.isSubmitting}
+        loadingText="Сохранение позиции..."
+      >
+        Зафиксировать актив
+      </Button>
+    </form>
+  );
 };

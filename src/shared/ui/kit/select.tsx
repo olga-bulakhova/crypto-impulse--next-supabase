@@ -41,7 +41,7 @@ function SelectTrigger({
       data-size={size}
       // 🌟 ИСПРАВЛЕНО: Изменили py-2 на py-1.5, а также h-11 на h-9 для уменьшения высоты поля!
       className={cn(
-        'flex w-full items-center justify-between gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/50 py-1.5 pr-3 pl-3 text-sm text-zinc-200 shadow-xs transition-colors outline-none focus:border-cyan-500/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-red-500/50 data-placeholder:text-zinc-500 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5',
+        'flex w-full items-center justify-between gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/50 py-1.5 pr-3 pl-3 text-sm text-zinc-200 shadow-xs transition-colors outline-none focus:border-cyan-500/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-brand-red data-placeholder:text-zinc-500 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5',
         className,
       )}
       {...props}
