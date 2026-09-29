@@ -10,6 +10,7 @@ interface CryptoRadarStorage {
 export interface SelectOption {
   label: string;
   value: string;
+  livePrice: number;
 }
 
 // 🛡️ 2. РАСШИРЯЕМ ГЛОБАЛЬНЫЙ ИНТЕРФЕЙС ТИПОВ (Без any для ESLint)

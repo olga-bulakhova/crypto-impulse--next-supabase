@@ -15,7 +15,7 @@ export const CyberHeading = ({
 }: CyberHeadingProps) => {
   return (
     <Tag
-      className={`text-sm font-extrabold tracking-wider text-zinc-400 uppercase select-none ${className}`}
+      className={`text-sm font-extrabold tracking-wider text-zinc-300 uppercase select-none ${className}`}
     >
       {children}
     </Tag>

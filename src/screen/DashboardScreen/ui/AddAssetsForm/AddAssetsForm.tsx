@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { Button } from '@/shared/ui/Button';
 import { FormDatePicker } from '@/shared/ui/form/FormDatePicker';
 import { useRouter } from 'next/navigation';
 import { addAssetToPortfolioAction } from '../../model';
+import { AddAssetSuccess } from './AddAssetSuccess';
 
 interface CoinOption {
   value: string;
@@ -44,15 +45,14 @@ const defaultValues: Inputs = {
   total: 0,
 };
 
-export const AddAssetsForm = ({
-  coinOptions,
-  onSuccess,
-}: AddAssetsFormProps) => {
+export const AddAssetsForm = ({ coinOptions }: AddAssetsFormProps) => {
   const form = useForm<Inputs>({
     resolver: zodResolver(schema),
     defaultValues,
   });
   const router = useRouter();
+
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const watchedCoinId = form.watch('coinId');
   const watchedAmount = form.watch('amount');
@@ -61,18 +61,15 @@ export const AddAssetsForm = ({
   useEffect(() => {
     if (!watchedCoinId) return;
 
-    // Ищем выбранную монету в переданных сверху опциях
     const selectedCoin = coinOptions.find(
       (coin) => coin.value === watchedCoinId,
     );
 
     if (selectedCoin) {
-      // Автоматически устанавливаем живую цену в инпут price
       form.setValue('price', selectedCoin.livePrice, { shouldValidate: true });
     }
   }, [watchedCoinId, coinOptions, form]);
 
-  // 🔄 2. АВТОМАТИЧЕСКИЙ ПЕРЕСЧЕТ: Total = Amount * Price
   useEffect(() => {
     const amount = Number(watchedAmount) || 0;
     const price = Number(watchedPrice) || 0;
@@ -99,12 +96,12 @@ export const AddAssetsForm = ({
 
       // 🟢 ШАГ 2: Сообщаем роутеру Next.js, что серверные компоненты портфеля нужно перерендерить [5.2]
       router.refresh();
+      setIsSuccess(true);
 
       // Очищаем форму, возвращая её в исходное чистое состояние
       form.reset(defaultValues);
 
       // Триггерим закрытие шторки сайдбара наружу
-      if (onSuccess) onSuccess();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -114,6 +111,17 @@ export const AddAssetsForm = ({
       );
     }
   };
+
+  if (isSuccess) {
+    return (
+      <AddAssetSuccess
+        onReset={() => {
+          form.reset();
+          setIsSuccess(false);
+        }}
+      />
+    );
+  }
 
   return (
     <form
