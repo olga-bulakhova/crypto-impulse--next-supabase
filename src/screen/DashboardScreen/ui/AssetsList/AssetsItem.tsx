@@ -22,7 +22,6 @@ const TableItem = ({
   label: string;
   children: React.ReactNode;
 }) => {
-  
   return (
     <TableRow className="w-full">
       <TableCell className="w-1/2 text-zinc-400">{label}</TableCell>
@@ -79,27 +78,29 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
         <span className="text-lg font-bold">{asset.name}</span>
       </div>
 
-      {/* Ваша исходная нетронутая таблица с метриками */}
       <Table>
         <TableBody>
           <TableItem label="Объем">{asset.amount}</TableItem>
-          <TableItem label="Цена покупки">
-            {formatCryptoPrice(asset.price)}
+
+          <TableItem label="Курс (Вход / Рынок)">
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <TrendBadge variant="neutral" size="sm">
+                {formatCryptoPrice(asset.price)}
+              </TrendBadge>
+
+              <TrendBadge variant={badgeVariant} size="sm">
+                <span>{formatCryptoPrice(asset.currentPrice)}</span>
+              </TrendBadge>
+            </div>
           </TableItem>
-          <TableItem label="Текущий курс">
-            {formatCryptoPrice(asset.currentPrice)}
-          </TableItem>
+
           <TableItem label="Текущая стоимость">
-            {formatCryptoPrice(asset.currentTotalAmount)}
+            <TrendBadge variant="neutral" size="sm">
+              {formatCryptoPrice(asset.currentTotalAmount)}
+            </TrendBadge>
           </TableItem>
           <TableItem label="Прибыль">
             <div className="flex items-center justify-end gap-2">
-              <TrendBadge variant={badgeVariant} size="md">
-                {asset.growPercent !== 0 && (
-                  <span>{asset.grow ? '▲' : '▼'}</span>
-                )}
-                <span>{asset.growPercent}%</span>
-              </TrendBadge>
               <span
                 className={
                   asset.totalProfit >= 0
@@ -109,6 +110,12 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
               >
                 {formatCryptoPrice(asset.totalProfit)}
               </span>
+              <TrendBadge variant={badgeVariant} size="sm">
+                {asset.growPercent !== 0 && (
+                  <span>{asset.grow ? '▲' : '▼'}</span>
+                )}
+                <span>{asset.growPercent}%</span>
+              </TrendBadge>
             </div>
           </TableItem>
         </TableBody>
