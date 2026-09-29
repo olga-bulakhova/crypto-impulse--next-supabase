@@ -17,7 +17,7 @@ const variantStyles: Record<TrendBadgeVariant, string> = {
 
 const sizeStyles: Record<TrendBadgeSize, string> = {
   sm: 'p-2 py-0.5 text-[11px]',
-  md: 'px-3 py-1 text-[13px] rounded-lg',
+  md: 'px-3 py-1 text-[13px]',
 };
 
 export const TrendBadge = ({
@@ -27,7 +27,7 @@ export const TrendBadge = ({
 }: TrendBadgeProps) => {
   return (
     <span
-      className={`flex items-center gap-1 rounded-md font-mono leading-none font-bold transition-colors duration-300 select-none ${variantStyles[variant]} ${sizeStyles[size]}`}
+      className={`flex items-center gap-1 rounded-full font-mono leading-none font-bold transition-colors duration-300 select-none ${variantStyles[variant]} ${sizeStyles[size]}`}
     >
       {children}
     </span>

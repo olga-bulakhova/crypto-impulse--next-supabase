@@ -1,6 +1,5 @@
-
 import { coinApi } from '@/shared/api/coin-api'; // 🌟 Импортируем наш зафиксированный API-сервис
-import type { CoinItem } from './types';
+import type { CoinItem } from './coinsTypes';
 
 // 📐 1. Описываем строгий интерфейс для нашего внутреннего хранилища
 interface CryptoRadarStorage {

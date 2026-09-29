@@ -1,12 +1,7 @@
 import { CryptoStoreManager } from '@/storage';
 import type { CoinItem } from '@/storage';
-
-export interface Asset {
-  id: string;
-  amount: number;
-  price: number; // Цена покупки актива
-  date: Date;
-}
+import { AssetsStorageManager } from '@/storage/assets/assetsStore';
+import type { Asset } from '@/storage/assets/assetsTypes';
 
 export interface FormattedAsset extends Asset {
   name: string | undefined;
@@ -21,24 +16,6 @@ export interface FormattedAsset extends Asset {
   icon: string;
 }
 
-// Временный мок данных активов
-const assets: Asset[] = [
-  {
-    id: 'bitcoin',
-    amount: 0.02,
-    price: 75244,
-    date: new Date(),
-  },
-  {
-    id: 'ethereum',
-    amount: 5,
-    price: 2700,
-    date: new Date(),
-  },
-];
-
-const getAssets = (): Promise<Asset[]> => Promise.resolve(assets);
-
 /**
  * 🤖 СЕРВЕРНАЯ ФУНКЦИЯ ТРАНСФОРМАЦИИ: Полный расчет доходности портфеля
  * Спецификация: Чистая серверная утилита бизнес-логики (БЕЗ использования use...) [5.2].
@@ -47,7 +24,7 @@ export async function getPortfolioData(): Promise<FormattedAsset[]> {
   // 1. Параллельно извлекаем кэшированные монеты и список активов пользователя [5.2]
   const [coins, liveAssets] = await Promise.all([
     CryptoStoreManager.getCachedCoins(),
-    getAssets(),
+    AssetsStorageManager.getAssets(), // Вызов нашего нового менеджера
   ]);
 
   // Переводим массив монет в Map для мгновенного поиска за O(1)

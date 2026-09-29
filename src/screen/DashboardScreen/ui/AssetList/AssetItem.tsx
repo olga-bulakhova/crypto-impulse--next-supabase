@@ -40,7 +40,7 @@ export const AssetItem = ({ asset }: AssetItemProps) => {
           <AvatarImage src={asset.icon} alt={asset.name} />
         </Avatar>
 
-        <span>{asset.name}</span>
+        <span className="text-lg font-bold">{asset.name}</span>
       </div>
 
       <Table>
@@ -57,7 +57,7 @@ export const AssetItem = ({ asset }: AssetItemProps) => {
           </TableItem>
           <TableItem label="Прибыль">
             <div className="flex items-center justify-end gap-2">
-              <TrendBadge variant={badgeVariant} size="sm">
+              <TrendBadge variant={badgeVariant} size="md">
                 {asset.growPercent !== 0 && (
                   <span>{asset.grow ? '▲' : '▼'}</span>
                 )}
