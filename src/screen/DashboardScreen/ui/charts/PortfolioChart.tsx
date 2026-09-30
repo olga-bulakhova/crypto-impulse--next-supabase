@@ -10,7 +10,7 @@ import {
 import { Pie } from 'react-chartjs-2';
 import type { FormattedAsset } from '../../model/getPortfolioData';
 import { useMemo } from 'react';
-import { formatCryptoPrice } from '@/shared/lib';
+import { formatCryptoPrice, hexToRgba } from '@/shared/lib';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -26,9 +26,19 @@ export const PortfolioChart = ({ assets }: PortfolioChartProps) => {
         {
           label: 'Стоимость позиции',
           data: assets.map((asset) => asset.currentTotalAmount || 0),
+
           backgroundColor: assets.map((asset) =>
-            asset.color ? `#${asset.color}` : '#27272a',
+            asset.color
+              ? hexToRgba(asset.color, 0.75)
+              : 'rgba(39, 39, 42, 0.65)',
           ),
+
+          hoverBackgroundColor: assets.map((asset) =>
+            asset.color
+              ? hexToRgba(asset.color, 0.85)
+              : 'rgba(39, 39, 42, 0.85)',
+          ),
+
           borderWidth: 0,
         },
       ],
@@ -56,8 +66,8 @@ export const PortfolioChart = ({ assets }: PortfolioChartProps) => {
           },
         },
         tooltip: {
-          backgroundColor: 'rgba(9, 9, 11, 0.85)', 
-          borderColor: 'rgba(39, 39, 42, 0.4)', 
+          backgroundColor: 'rgba(9, 9, 11, 0.85)',
+          borderColor: 'rgba(39, 39, 42, 0.4)',
           borderWidth: 1,
           padding: 10,
           cornerRadius: 12,

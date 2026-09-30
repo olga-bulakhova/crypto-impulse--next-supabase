@@ -12,15 +12,7 @@ export const LoginScreen = () => {
     <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 font-sans text-zinc-100 selection:bg-cyan-500/20">
       <Card
         className="max-w-md shadow-cyan-500/[0.02]"
-        title={
-          <>
-            Добро пожаловать на{' '}
-            <span className="text-[hsl(var(--cyber-blue))] text-cyan-400">
-              Радар
-            </span>{' '}
-            📡
-          </>
-        }
+        title="Добро пожаловать"
         description="Авторизуйтесь, чтобы настроить персональные алерты на крипто-импульсы"
       >
         <Button

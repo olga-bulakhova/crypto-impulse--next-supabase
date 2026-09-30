@@ -55,13 +55,16 @@ export const DashboardScreen = async () => {
       </div>
 
       {formattedAssets.length > 0 ? (
-        <div className="flex flex-col gap-12 md:flex-row">
+        <div className="flex flex-col gap-16 md:flex-row">
           <div className="w-full shrink-0 md:w-[394px]">
             <AssetsList assets={formattedAssets} onDelete={handleDeleteAsset} />
           </div>
 
           <div className="flex-1">
-            <CyberHeading as="h2" className="mb-4 flex items-center gap-2">
+            <CyberHeading
+              as="h2"
+              className="mb-4 flex items-center gap-2 text-zinc-500"
+            >
               <span>Общий баланс портфеля:</span>
               <span className="text-xl text-brand-blue">
                 {formatCryptoPrice(totalPortfolioCost)}
@@ -69,7 +72,7 @@ export const DashboardScreen = async () => {
             </CyberHeading>
 
             <div className="mt-8 flex flex-col gap-10">
-              <div>
+              <div className="max-w-[450px]">
                 <CyberHeading as="h3" className="text-3xs mb-6 text-zinc-500">
                   Аллокация активов
                 </CyberHeading>

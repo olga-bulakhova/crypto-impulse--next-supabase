@@ -1,10 +1,14 @@
+'use client';
+
+import { useState } from 'react';
 import { Card } from '@/shared/ui/Card';
 import { TrendBadge } from '@/shared/ui/TrendBadge';
 import type { FormattedAsset } from '../../model/getPortfolioData';
 import { Table, TableBody, TableCell, TableRow } from '@/shared/ui/kit/table';
 import { formatCryptoPrice } from '@/shared/lib';
 import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
-import { DeleteAssetButton } from './DeleteAssetButton'; // 🌟 Импортируем нашу кнопку с подтверждением
+import { DeleteAssetButton } from './DeleteAssetButton';
+import { ChevronDownIcon } from 'lucide-react'; // 🌟 Импортируем стрелочку для индикации спойлера
 
 interface AssetItemProps {
   asset: FormattedAsset;
@@ -29,11 +33,16 @@ const TableItem = ({
 };
 
 export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const badgeVariant =
     asset.growPercent === 0 ? 'neutral' : asset.grow ? 'up' : 'down';
 
   return (
-    <Card padding="sm" className="relative pr-2">
+    <Card
+      padding="sm"
+      className="relative overflow-hidden  transition-all duration-300 hover:border-zinc-800"
+    >
       <DeleteAssetButton
         assetId={asset.id}
         assetName={asset.name || asset.coinId}
@@ -41,58 +50,81 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
       />
 
       <div
-        className="flex items-center gap-3 pt-1 pl-4"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="group/header flex cursor-pointer items-center justify-between pt-1 pr-10 pl-2 select-none"
         style={{ color: `#${asset.color}` }}
+        role="button"
+        aria-expanded={isExpanded}
       >
-        <Avatar>
-          <AvatarImage src={asset.icon} alt={asset.name} />
-        </Avatar>
+        <div className="flex items-center gap-3">
+          <Avatar size="sm">
+            <AvatarImage src={asset.icon} alt={asset.name} />
+          </Avatar>
 
-        <span className="text-lg font-bold">{asset.name}</span>
+          <span className="text-md font-bold transition-colors duration-200 group-hover/header:text-zinc-200">
+            {asset.name}
+          </span>
+        </div>
+
+        <ChevronDownIcon
+          className={`size-5 text-zinc-500 transition-transform duration-300 ease-in-out ${
+            isExpanded
+              ? 'rotate-180 text-zinc-300'
+              : 'group-hover/header:text-zinc-400'
+          }`}
+        />
       </div>
 
-      <Table>
-        <TableBody>
-          <TableItem label="Объем">{asset.amount}</TableItem>
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+          isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <Table>
+            <TableBody>
+              <TableItem label="Объем">{asset.amount}</TableItem>
 
-          <TableItem label="Курс (Вход / Рынок)">
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              <TrendBadge variant="neutral" size="sm">
-                {formatCryptoPrice(asset.price)}
-              </TrendBadge>
+              <TableItem label="Курс (Вход / Рынок)">
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  <TrendBadge variant="neutral" size="sm">
+                    {formatCryptoPrice(asset.price)}
+                  </TrendBadge>
 
-              <TrendBadge variant={badgeVariant} size="sm">
-                <span>{formatCryptoPrice(asset.currentPrice)}</span>
-              </TrendBadge>
-            </div>
-          </TableItem>
+                  <TrendBadge variant={badgeVariant} size="sm">
+                    <span>{formatCryptoPrice(asset.currentPrice)}</span>
+                  </TrendBadge>
+                </div>
+              </TableItem>
 
-          <TableItem label="Текущая стоимость">
-            <TrendBadge variant="neutral" size="sm">
-              {formatCryptoPrice(asset.currentTotalAmount)}
-            </TrendBadge>
-          </TableItem>
-          <TableItem label="Прибыль">
-            <div className="flex items-center justify-end gap-2">
-              <span
-                className={
-                  asset.totalProfit >= 0
-                    ? 'font-bold text-brand-blue'
-                    : 'font-bold text-brand-red'
-                }
-              >
-                {formatCryptoPrice(asset.totalProfit)}
-              </span>
-              <TrendBadge variant={badgeVariant} size="sm">
-                {asset.growPercent !== 0 && (
-                  <span>{asset.grow ? '▲' : '▼'}</span>
-                )}
-                <span>{asset.growPercent}%</span>
-              </TrendBadge>
-            </div>
-          </TableItem>
-        </TableBody>
-      </Table>
+              <TableItem label="Текущая стоимость">
+                <TrendBadge variant="neutral" size="sm">
+                  {formatCryptoPrice(asset.currentTotalAmount)}
+                </TrendBadge>
+              </TableItem>
+              <TableItem label="Прибыль">
+                <div className="flex items-center justify-end gap-2">
+                  <span
+                    className={
+                      asset.totalProfit >= 0
+                        ? 'font-bold text-brand-blue'
+                        : 'font-bold text-brand-red'
+                    }
+                  >
+                    {formatCryptoPrice(asset.totalProfit)}
+                  </span>
+                  <TrendBadge variant={badgeVariant} size="sm">
+                    {asset.growPercent !== 0 && (
+                      <span>{asset.grow ? '▲' : '▼'}</span>
+                    )}
+                    <span>{asset.growPercent}%</span>
+                  </TrendBadge>
+                </div>
+              </TableItem>
+            </TableBody>
+          </Table>
+        </div>
+      </div>
     </Card>
   );
 };

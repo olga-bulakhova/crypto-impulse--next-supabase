@@ -64,10 +64,10 @@ export const DeleteAssetButton = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Удалить транзакцию?</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className="text-sm">
             Вы собираетесь безвозвратно удалить запись о покупке актива{' '}
-            {assetName.toUpperCase()} из оперативной памяти вашего портфеля. Это
-            действие нельзя будет отменить.
+            {assetName.toUpperCase()} из вашего портфеля. Это действие нельзя
+            будет отменить.
           </AlertDialogDescription>
         </AlertDialogHeader>
 

@@ -150,7 +150,7 @@ function AlertDialogAction({
       data-slot="alert-dialog-action"
       variant="danger"
       size="sm"
-      className={cn('font-mono text-xs tracking-wider uppercase', className)}
+      className={cn('font-mono text-xs tracking-wider', className)}
       {...props}
     />
   );
@@ -171,7 +171,7 @@ function AlertDialogCancel({
         <Button
           variant={variant}
           size={size}
-          className="border-zinc-800 bg-zinc-900/50 font-mono text-xs tracking-wider uppercase"
+          className="border-zinc-800 bg-zinc-900/50 font-mono text-xs tracking-wider"
         >
           {' '}
           Отмена
