@@ -1,10 +1,11 @@
-import { coinApi } from '@/shared/api/coin-api'; // 🌟 Импортируем наш зафиксированный API-сервис
+import { coinApi } from '@/shared/api/coin-api';
 import type { CoinItem } from './cryptoTypes';
 
 // 📐 1. Описываем строгий интерфейс для нашего внутреннего хранилища
 interface CryptoRadarStorage {
   lastScanTime: string | null;
   cachedCoins: CoinItem[];
+  isFetching: boolean; // 🟢 ДОБАВЛЕНО: Флаг защиты от параллельных дублирующих запросов [5.2]
 }
 
 export interface SelectOption {
@@ -23,6 +24,7 @@ declare global {
 const globalStore = globalThis.cryptoRadarStorage ?? {
   lastScanTime: null,
   cachedCoins: [],
+  isFetching: false, // Инициализируем флаг в false
 };
 
 // В режиме разработки (development) принудительно запечатываем объект в глобальный контекст,
@@ -33,7 +35,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 /**
  * 🛸 СЕРВЕРНЫЕ МЕТОДЫ УПРАВЛЕНИЯ ПАМЯТЬЮ (Data Access Methods)
- * Вызываются в любой точке серверного окружения приложения Next.js.
  */
 export const CryptoStoreManager = {
   /**
@@ -49,16 +50,29 @@ export const CryptoStoreManager = {
 
   /**
    * 📤 МЕТОД ЧТЕНИЯ: Отдает массив монет из оперативной памяти сервера.
-   * 🌟 ИСПРАВЛЕНО: Если кэш пуст, автоматически прогревает его через coinApi! [5.2]
+   * 🌟 ИСПРАВЛЕНО: Защищен от 3-кратного дублирования запросов при холодном старте Next.js! [5.2]
    */
   async getCachedCoins(): Promise<CoinItem[]> {
+    // Если кэш пуст и прямо сейчас другой воркер уже скачивает данные,
+    // заставляем текущий поток подождать завершения процесса вместо дублирования fetch [5.2]
+    if (globalStore.cachedCoins.length === 0 && globalStore.isFetching) {
+      // Кратковременный цикл ожидания (Polling), пока параллельный поток не наполнит память
+      while (globalStore.isFetching) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      return globalStore.cachedCoins;
+    }
+
     if (globalStore.cachedCoins.length === 0) {
       console.log(
         '[GLOBAL_STORE] Кэш пуст (холодный старт). Запускаем автоматический прогрев через coinApi...',
       );
       try {
+        globalStore.isFetching = true; // Выставляем блокировку для остальных параллельных воркеров
+
         const response = await coinApi.getAll();
         const freshCoins = response.result || [];
+
         // Наполняем глобальное хранилище котировками
         this.setCachedCoins(freshCoins);
       } catch (error: unknown) {
@@ -68,6 +82,8 @@ export const CryptoStoreManager = {
           '[GLOBAL_STORE_FETCH_ERROR] Не удалось автоматически прогреть кэш:',
           errorMessage,
         );
+      } finally {
+        globalStore.isFetching = false; // 🟢 Мгновенно снимаем блокировку в блоке finally
       }
     }
     return globalStore.cachedCoins;
@@ -75,13 +91,15 @@ export const CryptoStoreManager = {
 
   /**
    * 🔄 МЕТОД ПРИНУДИТЕЛЬНОГО ОБНОВЛЕНИЯ (Cache Invalidation)
-   * Игнорирует старый кэш, скачивает свежие данные и перезаписывает оперативную память.
    */
   async updateData(): Promise<CoinItem[]> {
+    if (globalStore.isFetching) return globalStore.cachedCoins;
+
     console.log(
       '[GLOBAL_STORE] Запущено принудительное ручное обновление данных котировок...',
     );
     try {
+      globalStore.isFetching = true;
       const response = await coinApi.getAll();
       const freshCoins = response.result || [];
 
@@ -95,21 +113,20 @@ export const CryptoStoreManager = {
         '[GLOBAL_STORE_UPDATE_ERROR] Не удалось принудительно обновить кэш:',
         errorMessage,
       );
+    } finally {
+      globalStore.isFetching = false;
     }
     return globalStore.cachedCoins;
   },
 
   /**
    * 🎯 МЕТОД ТОЧЕЧНОГО ЧТЕНИЯ: Находит конкретную монету по ID или Тикеру.
-   * 🌟 ИСПРАВЛЕНО: Теперь вызывает асинхронный getCachedCoins(), гарантируя наличие данных! [5.2]
    */
   async getCoinById(id: string): Promise<CoinItem | null> {
     if (!id) return null;
 
-    // Получаем массив коинов (если его нет, метод выше сам заполнит память) [5.2]
     const allCoins = await this.getCachedCoins();
 
-    // Ищем монету в массиве кэша (принудительно в нижнем регистре для защиты от опечаток API)
     const targetCoin = allCoins.find(
       (coin) =>
         coin.id.toLowerCase() === id.toLowerCase() ||
@@ -120,21 +137,21 @@ export const CryptoStoreManager = {
   },
 
   /**
-   * ⏱️ МЕТОД КОНТРОЛЯ ВРЕМЕНИ: Отдает метку времени последнего сканирования
+   * 📤 МЕТОД ДЛЯ СЕЛЕКТА: Извлекает массив монет и подготавливает под SelectOption[]
    */
-
   async getCoinsForSelect(): Promise<SelectOption[]> {
-    // 1. Извлекаем массив монет (метод сам автоматически прогреет кэш, если сервер только запустился) [5.2]
     const coins = await this.getCachedCoins();
 
-    // 2. Трансформируем данные в формат { label: name, value: id } с сортировкой по рангу рынка
     return coins.map((coin) => ({
       label: `${coin.name} (${coin.symbol.toUpperCase()})`,
       value: coin.id.toLowerCase(),
-      livePrice: coin.price || 0, // 🟢 ДОБАВЛЕНО: Прокидываем текущую живую цену из кэша!
+      livePrice: coin.price || 0,
     }));
   },
 
+  /**
+   * ⏱️ МЕТОД КОНТРОЛЯ ВРЕМЕНИ: Отдает метку времени последнего сканирования
+   */
   getLastScanTime(): string | null {
     return globalStore.lastScanTime;
   },

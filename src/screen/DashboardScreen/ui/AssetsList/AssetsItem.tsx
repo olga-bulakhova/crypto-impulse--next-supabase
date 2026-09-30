@@ -1,14 +1,10 @@
-'use client';
-
-import { useState } from 'react';
 import { Card } from '@/shared/ui/Card';
 import { TrendBadge } from '@/shared/ui/TrendBadge';
 import type { FormattedAsset } from '../../model/getPortfolioData';
 import { Table, TableBody, TableCell, TableRow } from '@/shared/ui/kit/table';
 import { formatCryptoPrice } from '@/shared/lib';
 import { Avatar, AvatarImage } from '@/shared/ui/kit/avatar';
-import { Button } from '@/shared/ui/Button';
-import { TrashIcon } from '@/shared/icons';
+import { DeleteAssetButton } from './DeleteAssetButton'; // 🌟 Импортируем нашу кнопку с подтверждением
 
 interface AssetItemProps {
   asset: FormattedAsset;
@@ -33,34 +29,16 @@ const TableItem = ({
 };
 
 export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
-  const [isDeleting, setIsDeleting] = useState(false);
   const badgeVariant =
     asset.growPercent === 0 ? 'neutral' : asset.grow ? 'up' : 'down';
 
-  const handleDeleteClick = async () => {
-    if (!onDelete) return;
-    try {
-      setIsDeleting(true);
-      await onDelete(asset.id);
-    } catch (error: unknown) {
-      console.error('[DELETE_ASSET_ERROR]', error);
-      setIsDeleting(false);
-    }
-  };
-
   return (
     <Card padding="sm" className="relative pr-2">
-      <Button
-        type="button"
-        variant="danger"
-        size="sm"
-        onClick={handleDeleteClick}
-        isLoading={isDeleting}
-        className="absolute top-3 right-3 !size-7 rounded-lg !p-0 opacity-60 transition-all duration-200 hover:opacity-100"
-        aria-label="Удалить транзакцию"
-      >
-        <TrashIcon className="size-3.5 stroke-[2.2]" />
-      </Button>
+      <DeleteAssetButton
+        assetId={asset.id}
+        assetName={asset.name || asset.coinId}
+        onDelete={onDelete}
+      />
 
       <div
         className="flex items-center gap-3 pt-1 pl-4"

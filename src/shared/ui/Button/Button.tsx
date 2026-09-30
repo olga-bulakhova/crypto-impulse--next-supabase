@@ -6,7 +6,7 @@ type ButtonVariant = 'base' | 'cyber' | 'amber' | 'yellow' | 'danger';
 type ButtonSize = 'sm' | 'default' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isLoading?: boolean;
   loadingText?: string;
   icon?: React.ReactNode;

@@ -19,14 +19,14 @@ const menuIconStyles =
 
 export const UserMenu = ({ onClose, onSignOut }: UserMenuProps) => {
   return (
-    <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 mt-2 w-48 origin-top-right rounded-xl border border-zinc-900 bg-zinc-950/95 p-1.5 shadow-2xl shadow-cyan-500/[0.03] backdrop-blur-xl transition-all duration-200">
+    <div className="absolute right-0 mt-2 w-48 origin-top-right animate-in rounded-xl border border-zinc-900 bg-zinc-950/95 p-1.5 shadow-2xl shadow-cyan-500/[0.03] backdrop-blur-xl transition-all duration-200 fade-in slide-in-from-top-2">
       <Link
         href={ROUTES.DASHBOARD}
         onClick={onClose}
         className={menuLinkStyles}
       >
         <DashboardIcon className={menuIconStyles} />
-        <span>Панель управления</span>
+        <span>Личный кабинет</span>
       </Link>
 
       <button onClick={onSignOut} className={menuLinkStyles}>
