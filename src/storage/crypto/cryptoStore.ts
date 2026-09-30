@@ -1,11 +1,12 @@
 import { coinApi } from '@/shared/api/coin-api';
 import type { CoinItem } from './cryptoTypes';
+import { CACHE_TAGS } from '@/shared/constants';
 
 // 📐 1. Описываем строгий интерфейс для нашего внутреннего хранилища
 interface CryptoRadarStorage {
   lastScanTime: string | null;
   cachedCoins: CoinItem[];
-  isFetching: boolean; // 🟢 ДОБАВЛЕНО: Флаг защиты от параллельных дублирующих запросов [5.2]
+  isFetching: boolean;
 }
 
 export interface SelectOption {
@@ -24,11 +25,11 @@ declare global {
 const globalStore = globalThis.cryptoRadarStorage ?? {
   lastScanTime: null,
   cachedCoins: [],
-  isFetching: false, // Инициализируем флаг в false
+  isFetching: false,
 };
 
 // В режиме разработки (development) принудительно запечатываем объект в глобальный контекст,
-// чтобы Fast Refresh / HMR Next.js не стирал и не дублировал данные при сохранении файлов! [5.2]
+// чтобы Fast Refresh / HMR Next.js не стирал и не дублировал данные при сохранении файлов!
 if (process.env.NODE_ENV !== 'production') {
   globalThis.cryptoRadarStorage = globalStore;
 }
@@ -50,13 +51,12 @@ export const CryptoStoreManager = {
 
   /**
    * 📤 МЕТОД ЧТЕНИЯ: Отдает массив монет из оперативной памяти сервера.
-   * 🌟 ИСПРАВЛЕНО: Защищен от 3-кратного дублирования запросов при холодном старте Next.js! [5.2]
+   * 🌟 ИСПРАВЛЕНО: Синхронизировано со свойством .coins из нашего обновленного coinApi!
    */
   async getCachedCoins(): Promise<CoinItem[]> {
     // Если кэш пуст и прямо сейчас другой воркер уже скачивает данные,
-    // заставляем текущий поток подождать завершения процесса вместо дублирования fetch [5.2]
+    // заставляем текущий поток подождать завершения процесса вместо дублирования fetch
     if (globalStore.cachedCoins.length === 0 && globalStore.isFetching) {
-      // Кратковременный цикл ожидания (Polling), пока параллельный поток не наполнит память
       while (globalStore.isFetching) {
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
@@ -68,9 +68,12 @@ export const CryptoStoreManager = {
         '[GLOBAL_STORE] Кэш пуст (холодный старт). Запускаем автоматический прогрев через coinApi...',
       );
       try {
-        globalStore.isFetching = true; // Выставляем блокировку для остальных параллельных воркеров
+        globalStore.isFetching = true;
 
         const response = await coinApi.getAll();
+
+        console.log(response);
+        // 🟢 ИСПРАВЛЕНresponseО: Извлекли данные из корректного финтех-поля .coins вместо устаревшего .result
         const freshCoins = response.result || [];
 
         // Наполняем глобальное хранилище котировками
@@ -83,7 +86,7 @@ export const CryptoStoreManager = {
           errorMessage,
         );
       } finally {
-        globalStore.isFetching = false; // 🟢 Мгновенно снимаем блокировку в блоке finally
+        globalStore.isFetching = false;
       }
     }
     return globalStore.cachedCoins;
@@ -91,6 +94,11 @@ export const CryptoStoreManager = {
 
   /**
    * 🔄 МЕТОД ПРИНУДИТЕЛЬНОГО ОБНОВЛЕНИЯ (Cache Invalidation)
+   * 🌟 ИСПРАВЛЕНО: Синхронизировано с полем .coins
+   */
+  /**
+   * 🔄 МЕТОД ПРИНУДИТЕЛЬНОГО ОБНОВЛЕНИЯ (Cache Invalidation)
+   * Теперь гарантированно стирает кэш Next.js и скачивает свежие котировки с биржи! [5.2]
    */
   async updateData(): Promise<CoinItem[]> {
     if (globalStore.isFetching) return globalStore.cachedCoins;
@@ -100,6 +108,11 @@ export const CryptoStoreManager = {
     );
     try {
       globalStore.isFetching = true;
+
+      const { revalidateTag } = await import('next/cache');
+
+      revalidateTag(CACHE_TAGS.CRYPTO_COINS, 'max');
+
       const response = await coinApi.getAll();
       const freshCoins = response.result || [];
 

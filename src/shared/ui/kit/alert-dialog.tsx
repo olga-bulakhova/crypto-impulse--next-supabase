@@ -1,8 +1,8 @@
 'use client';
 
 import { AlertDialog as AlertDialogPrimitive } from '@base-ui/react/alert-dialog';
-import { cn } from '@/lib/utils'; // Скорректируйте путь к вашей утилите cn
-import { Button } from '@/shared/ui/Button'; // Используем нашу готовую кибер-кнопку Vega
+import { cn } from '@/lib/utils';
+import { Button } from '@/shared/ui/Button';
 
 function AlertDialog({ ...props }: AlertDialogPrimitive.Root.Props) {
   return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
@@ -27,7 +27,6 @@ function AlertDialogOverlay({
   return (
     <AlertDialogPrimitive.Backdrop
       data-slot="alert-dialog-overlay"
-      // 🟢 ИСПРАВЛЕНО: Затемненный бэкграунд с размытием заднего фона
       className={cn(
         'fixed inset-0 isolate z-50 bg-black/40 backdrop-blur-sm duration-100 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
         className,
@@ -50,7 +49,6 @@ function AlertDialogContent({
       <AlertDialogPrimitive.Popup
         data-slot="alert-dialog-content"
         data-size={size}
-        // 🟢 ИСПРАВЛЕНО: Превратили контентное окно в темную матовую кибер-карточку с тонкими границами
         className={cn(
           'group/alert-dialog-content fixed top-1/2 left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-6 rounded-2xl border border-zinc-900 bg-zinc-950/80 p-6 text-zinc-200 shadow-2xl shadow-red-500/[0.01] backdrop-blur-xl duration-100 outline-none data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-md data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
           className,

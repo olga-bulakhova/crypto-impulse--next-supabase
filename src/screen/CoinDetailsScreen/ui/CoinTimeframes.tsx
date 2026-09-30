@@ -68,7 +68,7 @@ export const CoinTimeframes = ({ coin }: CoinTimeframesProps) => {
         </TableBody>
       </Table>
 
-      <div className="mt-5 flex items-start justify-between gap-3 px-4 pt-4">
+      <div className="mt-5 flex flex-col items-start justify-between gap-3 px-4 pt-4 lg:flex-row">
         <div className="flex flex-col gap-0.5">
           <span className="font-mono text-[11px] font-bold tracking-wider text-zinc-500 uppercase">
             Оценка безопасности актива{' '}

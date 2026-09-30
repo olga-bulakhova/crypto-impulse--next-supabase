@@ -1,103 +1,105 @@
-import crypto from 'node:crypto'; // 🌟 Нативный криптографический модуль Node.js для генерации UUID [2.1]
+import { createClient } from '@supabase/supabase-js'; // Убедитесь, что клиент Supabase настроен в проекте
 import type { Asset } from './assetsTypes';
 
-// 📐 1. ОПИСЫВАЕМ СТРОГИЙ ИНТЕРФЕЙС ХРАНИЛИЩА АКТИВОВ
-interface UserAssetsStorage {
-  userPortfolio: Asset[];
-}
+// Инициализируем клиент Supabase. Замените пути на ваши переменные окружения (.env.local) [5.2]
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// 🛡️ 2. РАСШИРЯЕМ ГЛОБАЛЬНЫЙ ИНТЕРФЕЙС ТИПОВ ДЛЯ globalThis (Без any)
-declare global {
-  // eslint-disable-next-line no-var
-  var userAssetsStorage: UserAssetsStorage | undefined;
-}
-
-// Переменные-моки для самого первого холодного старта сервера с уникальными UUID транзакций [2.1]
-const initialMockAssets: Asset[] = [
-  {
-    id: 'tx-btc-mock-001',
-    coinId: 'bitcoin',
-    amount: 0.02,
-    price: 75244,
-    date: new Date(),
-  },
-  {
-    id: 'tx-eth-mock-002',
-    coinId: 'ethereum',
-    amount: 5,
-    price: 2700,
-    date: new Date(),
-  },
-];
-
-// Если хранилище уже сидит в глобальной памяти — берем его, если сервер запущен с нуля — инициализируем моками
-const globalAssetsStore = globalThis.userAssetsStorage ?? {
-  userPortfolio: initialMockAssets,
-};
-
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.userAssetsStorage = globalAssetsStore;
-}
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /**
- * 🛸 СЕРВЕРНЫЙ МЕНЕДЖЕР ПОРТФЕЛЯ (Assets Storage Manager)
+ * 🛸 СЕРВЕРНЫЙ МЕНЕДЖЕР ПОРТФЕЛЯ (Supabase Storage Manager)
+ * Полностью заменяет globalThis оперативную память на персистентную базу данных PostgreSQL.
  */
 export const AssetsStorageManager = {
   /**
-   * 📤 МЕТОД ЧТЕНИЯ: Моментально возвращает текущий список активов из памяти сервера
+   * 📤 МЕТОД ЧТЕНИЯ: Извлекает все транзакции напрямую из таблицы Supabase
    */
   async getAssets(): Promise<Asset[]> {
-    console.log(
-      `[ASSETS_STORE] Извлечено позиций из памяти сервера: ${globalAssetsStore.userPortfolio.length}`,
-    );
-    return globalAssetsStore.userPortfolio;
+    const { data, error } = await supabase
+      .from('user_portfolio_assets')
+      .select('id, coin_id, amount, price, date')
+      .order('date', { ascending: false });
+
+    if (error) {
+      console.error(
+        '[SUPABASE_FETCH_ERROR] Не удалось извлечь активы:',
+        error.message,
+      );
+      return [];
+    }
+
+    // Трансформируем snake_case бД в camelCase интерфейс нашего TypeScript приложения
+    return (data || []).map((row) => ({
+      id: row.id,
+      coinId: row.coin_id,
+      amount: Number(row.amount),
+      price: Number(row.price),
+      date: new Date(row.date),
+    }));
   },
 
   /**
-   * 📥 МЕТОД ОБНОВЛЕНИЯ / ДОБАВЛЕНИЯ: Генерирует уникальный UUID и пушит сделку в массив [2.1]
+   * 📥 МЕТОД ДОБАВЛЕНИЯ: Физически записывает новый лот покупки в таблицу Supabase
    */
   async addAsset(newAssetData: Omit<Asset, 'id'>): Promise<Asset[]> {
-    // 🟢 ГЕНЕРАЦИЯ UUID: Создаем криптографически стойкий уникальный ключ транзакции [2.1]
-    const transactionAsset: Asset = {
-      id: crypto.randomUUID(),
-      ...newAssetData,
-    };
+    const { error } = await supabase.from('user_portfolio_assets').insert([
+      {
+        coin_id: newAssetData.coinId.toLowerCase(),
+        amount: newAssetData.amount,
+        price: newAssetData.price,
+        date: newAssetData.date.toISOString(),
+      },
+    ]);
 
-    globalAssetsStore.userPortfolio = [
-      ...globalAssetsStore.userPortfolio,
-      transactionAsset,
-    ];
+    if (error) {
+      console.error(
+        '[SUPABASE_INSERT_ERROR] Сбой записи транзакции:',
+        error.message,
+      );
+      throw new Error(`Ошибка Supabase: ${error.message}`);
+    }
 
     console.log(
-      `[ASSETS_STORE] Новая сделка зафиксирована! UUID транзакции: ${transactionAsset.id}`,
+      `[SUPABASE_STORE] Новая сделка по ${newAssetData.coinId} успешно зафиксирована в облаке!`,
     );
 
-    return globalAssetsStore.userPortfolio;
+    // Возвращаем обновленный список активов для бесшовной совместимости
+    return this.getAssets();
   },
 
   /**
-   * 🗑️ МЕТОД УДАЛЕНИЯ ПО ID ТРАНСАКЦИИ: Вырезает сделку из глобальной памяти сервера [2.1]
+   * 🗑️ МЕТОД УДАЛЕНИЯ: Вырезает сделку по её уникальному UUID из базы данных Supabase
    */
   async deleteAssetById(transactionId: string): Promise<Asset[]> {
-    const previousLength = globalAssetsStore.userPortfolio.length;
+    const { error } = await supabase
+      .from('user_portfolio_assets')
+      .delete()
+      .eq('id', transactionId);
 
-    // Иммутабельно фильтруем массив, исключая элемент с переданным UUID
-    globalAssetsStore.userPortfolio = globalAssetsStore.userPortfolio.filter(
-      (asset) => asset.id !== transactionId,
-    );
+    if (error) {
+      console.error(
+        '[SUPABASE_DELETE_ERROR] Сбой при удалении транзакции:',
+        error.message,
+      );
+      throw new Error(`Ошибка Supabase при удалении: ${error.message}`);
+    }
 
     console.log(
-      `[ASSETS_STORE] Операция удаления: было ${previousLength} позиций, стало ${globalAssetsStore.userPortfolio.length}`,
+      `[SUPABASE_STORE] Транзакция ${transactionId} успешно удалена из облака!`,
     );
 
-    return globalAssetsStore.userPortfolio;
+    // Возвращаем свежий список активов
+    return this.getAssets();
   },
 
   /**
-   * Прямая перезапись массива (оставляем для обратной совместимости утилит)
+   * Прямая перезапись массива (оставляем обертку для совместимости с моками)
    */
   async updateAssets(newAssets: Asset[]): Promise<Asset[]> {
-    globalAssetsStore.userPortfolio = [...newAssets];
-    return globalAssetsStore.userPortfolio;
+    console.warn(
+      '[SUPABASE_STORE] updateAssets вызван в режиме базы данных. Используйте addAsset или deleteAssetById.',
+    );
+    return this.getAssets();
   },
 };

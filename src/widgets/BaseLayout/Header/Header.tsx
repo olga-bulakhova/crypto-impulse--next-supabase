@@ -18,8 +18,6 @@ export const Header = async () => {
     user?.user_metadata?.user_name ||
     'Трейдер';
 
-  console.log(user?.user_metadata);
-
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">

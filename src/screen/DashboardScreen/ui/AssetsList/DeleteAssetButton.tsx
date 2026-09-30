@@ -53,7 +53,7 @@ export const DeleteAssetButton = ({
             variant="danger"
             size="sm"
             isLoading={isDeleting}
-            className="absolute top-3 right-3 !size-7 rounded-lg !p-0 opacity-60 transition-all duration-200 hover:opacity-100"
+            className="absolute top-2.5 right-3 !size-7 rounded-lg !p-0 opacity-60 transition-all duration-200 hover:opacity-100"
             aria-label="Удалить транзакцию"
           >
             <TrashIcon className="size-3.5 stroke-[2.2]" />

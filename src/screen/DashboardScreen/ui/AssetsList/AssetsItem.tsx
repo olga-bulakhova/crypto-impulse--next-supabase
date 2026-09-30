@@ -41,7 +41,7 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
   return (
     <Card
       padding="sm"
-      className="relative overflow-hidden  transition-all duration-300 hover:border-zinc-800"
+      className="relative overflow-hidden transition-all duration-300"
     >
       <DeleteAssetButton
         assetId={asset.id}
