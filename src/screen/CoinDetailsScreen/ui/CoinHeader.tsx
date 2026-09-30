@@ -26,7 +26,7 @@ export const CoinHeader = ({ coin }: CoinHeaderProps) => {
               {coin.name}
             </h1>
 
-            <TrendBadge variant="up" size="md">
+            <TrendBadge variant="neutral" size="md">
               {coin.symbol}
             </TrendBadge>
           </div>

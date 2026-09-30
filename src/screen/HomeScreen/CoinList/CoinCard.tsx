@@ -7,7 +7,7 @@ interface CoinCardProps {
 }
 
 export const CoinCard = ({ coin }: CoinCardProps) => {
-  const changePercentage = coin.priceChange1d || 0;
+  const changePercentage = coin.priceChange1h || 0;
   const isPositive = changePercentage >= 0;
   const isFlat = changePercentage === 0;
   const variant =

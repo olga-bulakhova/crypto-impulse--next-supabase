@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache'; // 🌟 Импортируем утилиту мгновенного обновления кэша страниц
+import { revalidatePath } from 'next/cache';
 import { getPortfolioData } from './model/getPortfolioData';
 import { CyberHeading } from '@/shared/ui/CyberHeading';
 import { Container } from '@/shared/ui/Container';
@@ -8,7 +8,11 @@ import { Button } from '@/shared/ui/Button';
 import { AddAssetsForm } from './ui/AddAssetsForm';
 import { CryptoStoreManager } from '@/storage';
 import { AssetsStorageManager } from '@/storage/assets/assetsStore';
+import { EmptyAssetsState } from './ui/EmptyAssetsState';
 
+/**
+ * 🛸 СЕРВЕРНЫЙ ЭКРАН: Главная панель инвестора
+ */
 export const DashboardScreen = async () => {
   const [formattedAssets, coinOptions] = await Promise.all([
     getPortfolioData(),
@@ -49,10 +53,17 @@ export const DashboardScreen = async () => {
       </div>
 
       <div className="grid grid-cols-1 gap-2.5 md:grid-cols-5">
+        {/* Левая часть: Либо список активов, либо пустой экран-заглушка */}
         <div className="md:col-span-2">
-          <AssetsList assets={formattedAssets} onDelete={handleDeleteAsset} />
+          {formattedAssets.length > 0 ? (
+            <AssetsList assets={formattedAssets} onDelete={handleDeleteAsset} />
+          ) : (
+            // 🟢 ИСПРАВЛЕНО: Выводим изолированный Empty State, если сделок нет!
+            <EmptyAssetsState />
+          )}
         </div>
 
+        {/* Правая часть под будущие графики */}
         <div className="md:col-span-3"></div>
       </div>
     </Container>
