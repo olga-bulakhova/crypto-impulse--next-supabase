@@ -24,8 +24,8 @@ const TableItem = ({
 }) => {
   return (
     <TableRow className="w-full">
-      <TableCell className="w-1/2 text-zinc-400">{label}</TableCell>
-      <TableCell className="w-1/2 text-right font-mono text-sm text-white">
+      <TableCell className="w-1/3 text-zinc-400">{label}</TableCell>
+      <TableCell className="w-2/3 text-right font-mono text-sm text-white">
         {children}
       </TableCell>
     </TableRow>
@@ -62,7 +62,6 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
         <TrashIcon className="size-3.5 stroke-[2.2]" />
       </Button>
 
-      {/* Ваша исходная нетронутая верстка шапки монеты */}
       <div
         className="flex items-center gap-3 pt-1 pl-4"
         style={{ color: `#${asset.color}` }}

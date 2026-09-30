@@ -1,5 +1,8 @@
 import { revalidatePath } from 'next/cache';
-import { getPortfolioData } from './model/getPortfolioData';
+import {
+  getPortfolioData,
+  getPortfolioTotalCost,
+} from './model/getPortfolioData';
 import { CyberHeading } from '@/shared/ui/CyberHeading';
 import { Container } from '@/shared/ui/Container';
 import { AssetsList } from './ui/AssetsList';
@@ -9,14 +12,17 @@ import { AddAssetsForm } from './ui/AddAssetsForm';
 import { CryptoStoreManager } from '@/storage';
 import { AssetsStorageManager } from '@/storage/assets/assetsStore';
 import { EmptyAssetsState } from './ui/EmptyAssetsState';
+import { formatCryptoPrice } from '@/shared/lib';
+import { PortfolioChart, PortfolioProfitChart } from './ui/charts';
 
 /**
  * 🛸 СЕРВЕРНЫЙ ЭКРАН: Главная панель инвестора
  */
 export const DashboardScreen = async () => {
-  const [formattedAssets, coinOptions] = await Promise.all([
+  const [formattedAssets, coinOptions, totalPortfolioCost] = await Promise.all([
     getPortfolioData(),
     CryptoStoreManager.getCoinsForSelect(),
+    getPortfolioTotalCost(),
   ]);
 
   const handleDeleteAsset = async (transactionId: string) => {
@@ -31,12 +37,8 @@ export const DashboardScreen = async () => {
   };
 
   return (
-    <Container maxWidth="7xl">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <CyberHeading as="h1">
-          Баланс и текущее состояние вашего крипто-портфеля
-        </CyberHeading>
-
+    <Container maxWidth="6xl">
+      <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
         <ResponsiveSidebar
           title="Добавить новый актив"
           description="Зафиксируйте объем и стоимость покупки монеты в вашем портфеле"
@@ -52,20 +54,42 @@ export const DashboardScreen = async () => {
         </ResponsiveSidebar>
       </div>
 
-      <div className="grid grid-cols-1 gap-2.5 md:grid-cols-5">
-        {/* Левая часть: Либо список активов, либо пустой экран-заглушка */}
-        <div className="md:col-span-2">
-          {formattedAssets.length > 0 ? (
+      {formattedAssets.length > 0 ? (
+        <div className="flex flex-col gap-12 md:flex-row">
+          <div className="w-full shrink-0 md:w-[394px]">
             <AssetsList assets={formattedAssets} onDelete={handleDeleteAsset} />
-          ) : (
-            // 🟢 ИСПРАВЛЕНО: Выводим изолированный Empty State, если сделок нет!
-            <EmptyAssetsState />
-          )}
-        </div>
+          </div>
 
-        {/* Правая часть под будущие графики */}
-        <div className="md:col-span-3"></div>
-      </div>
+          <div className="flex-1">
+            <CyberHeading as="h2" className="mb-4 flex items-center gap-2">
+              <span>Общий баланс портфеля:</span>
+              <span className="text-xl text-brand-blue">
+                {formatCryptoPrice(totalPortfolioCost)}
+              </span>
+            </CyberHeading>
+
+            <div className="mt-8 flex flex-col gap-10">
+              <div>
+                <CyberHeading as="h3" className="text-3xs mb-6 text-zinc-500">
+                  Аллокация активов
+                </CyberHeading>
+                <PortfolioChart assets={formattedAssets} />
+              </div>
+
+              <div>
+                <CyberHeading as="h3" className="text-3xs mb-6 text-zinc-500">
+                  Чистый профит и убыток (PnL)
+                </CyberHeading>
+                <PortfolioProfitChart assets={formattedAssets} />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="mx-auto mt-6 w-full max-w-2xl">
+          <EmptyAssetsState />
+        </div>
+      )}
     </Container>
   );
 };

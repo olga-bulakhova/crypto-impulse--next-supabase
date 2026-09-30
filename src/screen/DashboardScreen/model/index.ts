@@ -1,2 +1,2 @@
-export { getPortfolioData } from './getPortfolioData';
+export { getPortfolioData, getPortfolioTotalCost } from './getPortfolioData';
 export { addAssetToPortfolioAction } from './addAssetToPortfolio';

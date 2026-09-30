@@ -24,7 +24,7 @@ export const Container = ({
 }: ContainerProps) => {
   return (
     <div
-      className={`mx-auto px-4 py-8 font-sans text-zinc-100 select-none ${maxWidthStyles[maxWidth]} ${className}`}
+      className={`mx-auto px-4 py-4 font-sans text-zinc-100 select-none ${maxWidthStyles[maxWidth]} ${className}`}
     >
       {children}
     </div>

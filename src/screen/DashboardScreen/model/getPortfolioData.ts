@@ -62,3 +62,21 @@ export async function getPortfolioData(): Promise<FormattedAsset[]> {
     };
   });
 }
+
+export async function getPortfolioTotalCost(): Promise<number> {
+  try {
+    const formattedAssets = await getPortfolioData();
+
+    const totalCost = formattedAssets.reduce((accumulator, asset) => {
+      return accumulator + (asset.currentTotalAmount || 0);
+    }, 0);
+
+    return Number(totalCost.toFixed(2));
+  } catch (error: unknown) {
+    console.error(
+      '[GET_PORTFOLIO_TOTAL_COST_ERROR] Сбой расчета баланса:',
+      error,
+    );
+    return 0;
+  }
+}

@@ -50,10 +50,10 @@ export const CoinTimeframes = ({ coin }: CoinTimeframesProps) => {
                 <TableCell
                   className={`w-1/2 items-center gap-0.5 text-right font-mono text-sm font-black ${
                     isFlat
-                      ? 'text-brand-yellow'
+                      ? 'text-zinc-400'
                       : isPositive
                         ? 'text-brand-blue'
-                        : 'text-red-400'
+                        : 'text-brand-red'
                   }`}
                 >
                   {!isFlat && (
