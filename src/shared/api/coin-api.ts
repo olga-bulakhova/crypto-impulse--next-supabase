@@ -13,10 +13,6 @@ const API_ROUTES = {
   },
 };
 
-/**
- * 🛠️ СЛУЖЕБНАЯ ФУНКЦИЯ: Создание заголовков запроса
- * Автоматически инжектирует секретный X-API-KEY на стороне сервера Next.js [5.2]
- */
 export const createHeaders = (
   customHeaders?: HeadersInit,
   hasBody = false,
@@ -32,9 +28,6 @@ export const createHeaders = (
   return { ...baseHeaders, ...customHeaders };
 };
 
-/**
- * 🛠️ СЛУЖЕБНАЯ ФУНКЦИЯ: Универсальный парсинг и обработка ошибок сервера
- */
 export async function handleResponse<T>(response: Response): Promise<T> {
   if (response.status === 204) return {} as T;
 
@@ -49,9 +42,6 @@ export async function handleResponse<T>(response: Response): Promise<T> {
   return data as T;
 }
 
-/**
- * 🛠️ СЛУЖЕБНАЯ ФУНКЦИЯ: Обёртка над нативным fetch с поддержкой Next.js Data Cache [5.2]
- */
 export const apiFetch = async <T>(
   endpoint: string,
   options: RequestInit = {},
@@ -68,15 +58,12 @@ export const apiFetch = async <T>(
   return handleResponse<T>(response);
 };
 
-/**
- * 📡 ГЛАВНЫЙ СЕРВИС: Методы сетевых запросов к крипто-шлюзу
- */
 export const coinApi = {
   getAll: async (): Promise<ApiCoinStatsResponse> => {
     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
       method: 'GET',
       next: {
-        revalidate: 15 * 60, // 🟢 Ровно 15 минут кэширования на диске
+        revalidate: 15 * 60, //  15 минут кэширования на диске
         tags: [CACHE_TAGS.CRYPTO_COINS], // Системный тег для ручного сброса кэша
       },
     });

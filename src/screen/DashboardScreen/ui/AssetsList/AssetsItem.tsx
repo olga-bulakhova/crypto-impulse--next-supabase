@@ -61,7 +61,7 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
             <AvatarImage src={asset.icon} alt={asset.name} />
           </Avatar>
 
-          <span className="text-md font-bold transition-colors duration-200 group-hover/header:text-zinc-200">
+          <span className="text-sm font-bold transition-colors duration-200 group-hover/header:text-zinc-200">
             {asset.name}
           </span>
         </div>

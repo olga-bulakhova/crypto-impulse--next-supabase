@@ -16,14 +16,26 @@ export async function generateMetadata({
 
   if (!coin) {
     return {
-      title: 'Крипто-актив не найден | Crypto Impulse',
-      description: 'Запрошенная криптовалюта отсутствует в кэше сканера.',
+      title: 'Крипто-актив не найден | Crypto Analise',
+      description:
+        'Запрошенная криптовалюта отсутствует в оперативной памяти аналитического шлюза.',
     };
   }
 
+  const formattedPrice = coin.price
+    ? coin.price.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6,
+      })
+    : '0.00';
+
   return {
-    title: `${coin.name} (${coin.symbol.toUpperCase()}) Живой курс: \$${coin.price.toLocaleString()} | Crypto Impulse`,
-    description: `Детальная аналитика импульсов, капитализации и изменения цены ${coin.name} по таймфреймам на радаре аномалий Crypto Impulse.`,
+    title: `${coin.name} (${coin.symbol.toUpperCase()}) | Курс: \$${formattedPrice} — Аналитика Crypto Analise`,
+    description: `Глубокий математический анализ котировок, рыночной капитализации и волатильности ${coin.name} (${coin.symbol.toUpperCase()}). Инструменты моделирования структуры аллокации и аудита PnL-эффективности позиций.`,
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
