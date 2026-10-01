@@ -7,6 +7,8 @@ interface CoinHeaderProps {
 }
 
 export const CoinHeader = ({ coin }: CoinHeaderProps) => {
+  const coinColor = coin.color ? `#${coin.color}` : 'var(--color-brand-yellow)';
+
   return (
     <div className="mb-7 flex flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-4">
@@ -18,9 +20,7 @@ export const CoinHeader = ({ coin }: CoinHeaderProps) => {
             <h1
               className="text-xl font-black tracking-wider uppercase"
               style={{
-                color: coin.color
-                  ? `#${coin.color}`
-                  : 'var(--color-brand-yellow)',
+                color: coinColor,
               }}
             >
               {coin.name}
@@ -38,7 +38,12 @@ export const CoinHeader = ({ coin }: CoinHeaderProps) => {
       </div>
 
       <div className="flex flex-col sm:items-end">
-        <span className="font-mono text-2xl font-black tracking-tight text-zinc-100">
+        <span
+          className="font-mono text-2xl font-black tracking-tight text-zinc-100"
+          style={{
+            color: coinColor,
+          }}
+        >
           $
           {coin.price < 1
             ? coin.price.toFixed(6)

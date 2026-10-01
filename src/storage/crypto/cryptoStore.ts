@@ -8,12 +8,19 @@ export interface SelectOption {
   livePrice: number;
 }
 
+let lastScanTime: string | null = null;
+
 export const CryptoStoreManager = {
   async getCachedCoins(): Promise<CoinItem[]> {
     try {
       const response = await coinApi.getAll();
+      const data = response.result || [];
 
-      return response.result || [];
+      if (data.length > 0) {
+        lastScanTime = new Date().toISOString();
+      }
+
+      return data;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
@@ -34,12 +41,13 @@ export const CryptoStoreManager = {
 
       revalidateTag(CACHE_TAGS.CRYPTO_COINS, 'max');
     } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       console.error(
         '[GLOBAL_STORE_UPDATE_ERROR] Не удалось принудительно инвалидировать тег кэша:',
-        error,
+        errorMessage,
       );
     }
-
     return this.getCachedCoins();
   },
 
@@ -47,19 +55,19 @@ export const CryptoStoreManager = {
     if (!id) return null;
 
     const allCoins = await this.getCachedCoins();
+    const searchId = id.toLowerCase();
 
     return (
       allCoins.find(
         (coin) =>
-          coin.id.toLowerCase() === id.toLowerCase() ||
-          coin.symbol.toLowerCase() === id.toLowerCase(),
+          coin.id.toLowerCase() === searchId ||
+          coin.symbol.toLowerCase() === searchId,
       ) || null
     );
   },
 
   async getCoinsForSelect(): Promise<SelectOption[]> {
     const coins = await this.getCachedCoins();
-
     return coins.map((coin) => ({
       label: `${coin.name} (${coin.symbol.toUpperCase()})`,
       value: coin.id.toLowerCase(),
@@ -68,6 +76,6 @@ export const CryptoStoreManager = {
   },
 
   getLastScanTime(): string | null {
-    return new Date().toISOString();
+    return lastScanTime;
   },
 };

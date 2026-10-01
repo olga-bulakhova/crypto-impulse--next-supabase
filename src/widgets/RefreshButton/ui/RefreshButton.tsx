@@ -42,9 +42,9 @@ export const RefreshButton = () => {
           : 'cursor-pointer hover:text-cyan-400 hover:shadow-lg hover:shadow-cyan-500/[0.02]'
       }`}
     >
-      <RefreshIcon isPending={isPending} className="h-5 w-5 sm:h-4 sm:w-4" />
+      <RefreshIcon isPending={isPending} className="h-4 w-4" />
 
-      <span className="hidden sm:inline">
+      <span className="inline">
         {isPending ? 'Обновление...' : 'Обновить котировки'}
       </span>
     </button>
