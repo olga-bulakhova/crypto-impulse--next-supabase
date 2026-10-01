@@ -1,16 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, type SubmitHandler } from 'react-hook-form';
 import { FieldGroup } from '@/shared/ui/kit/field';
 import { FormInput, FormSelect } from '@/shared/ui/form';
 import { Button } from '@/shared/ui/Button';
 import { FormDatePicker } from '@/shared/ui/form/FormDatePicker';
-import { useRouter } from 'next/navigation';
-import { addAssetToPortfolioAction } from '../../model';
 import { AddAssetSuccess } from './AddAssetSuccess';
+import { useAddAssetsForm } from './hooks/useAddAssetsForm';
 
 interface CoinOption {
   value: string;
@@ -23,104 +18,24 @@ interface AddAssetsFormProps {
   onSuccess?: () => void;
 }
 
-const schema = z.object({
-  coinId: z.string().min(1, { message: 'Выберите криптовалюту' }),
-  amount: z
-    .number({ message: 'Введите число' })
-    .min(0.000001, { message: 'Минимум 0.000001' }),
-  price: z
-    .number({ message: 'Введите число' })
-    .min(0.01, { message: 'Минимум $0.01' }),
-  date: z.date({ message: 'Выберите дату операции' }),
-  total: z.number({ message: 'Введите число' }),
-});
-
-type Inputs = z.infer<typeof schema>;
-
-const defaultValues: Inputs = {
-  coinId: '',
-  amount: 0,
-  price: 0,
-  date: new Date(),
-  total: 0,
-};
-
 export const AddAssetsForm = ({ coinOptions }: AddAssetsFormProps) => {
-  const form = useForm<Inputs>({
-    resolver: zodResolver(schema),
-    defaultValues,
-  });
-  const router = useRouter();
-
-  const [isSuccess, setIsSuccess] = useState(false);
-
-  const watchedCoinId = form.watch('coinId');
-  const watchedAmount = form.watch('amount');
-  const watchedPrice = form.watch('price');
-
-  useEffect(() => {
-    if (!watchedCoinId) return;
-
-    const selectedCoin = coinOptions.find(
-      (coin) => coin.value === watchedCoinId,
-    );
-
-    if (selectedCoin) {
-      form.setValue('price', selectedCoin.livePrice, { shouldValidate: true });
-    }
-  }, [watchedCoinId, coinOptions, form]);
-
-  useEffect(() => {
-    const amount = Number(watchedAmount) || 0;
-    const price = Number(watchedPrice) || 0;
-    const calculatedTotal = Number((amount * price).toFixed(2));
-
-    form.setValue('total', calculatedTotal, { shouldValidate: true });
-  }, [watchedAmount, watchedPrice, form]);
-
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      await addAssetToPortfolioAction({
-        coinId: data.coinId,
-        amount: data.amount,
-        price: data.price,
-        date: data.date,
-      } as Parameters<typeof addAssetToPortfolioAction>[0]); // Автоматически берет тип первого аргумента экшена!
-
-      console.log(
-        '✅ Данные успешно запечатаны в UserAssetsStorage на сервере!',
-      );
-
-      router.refresh();
-      setIsSuccess(true);
-
-      form.reset(defaultValues);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      console.error(
-        '[FORM_SUBMIT_ERROR] Сбой добавления актива:',
-        errorMessage,
-      );
-    }
-  };
+  const { form, isSuccess, handleResetSuccess, handleFormSubmit } =
+    useAddAssetsForm({
+      coinOptions,
+    });
 
   if (isSuccess) {
     return (
       <AddAssetSuccess
         onReset={() => {
-          form.reset();
-          setIsSuccess(false);
+          handleResetSuccess();
         }}
       />
     );
   }
 
   return (
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="flex flex-col gap-5 font-sans"
-    >
+    <form onSubmit={handleFormSubmit} className="flex flex-col gap-5 font-sans">
       <FieldGroup className="gap-4">
         <FormSelect
           name="coinId"

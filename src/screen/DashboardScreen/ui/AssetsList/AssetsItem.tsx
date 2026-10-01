@@ -103,12 +103,14 @@ export const AssetsItem = ({ asset, onDelete }: AssetItemProps) => {
                 </TrendBadge>
               </TableItem>
               <TableItem label="Прибыль">
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-end gap-2 font-bold">
                   <span
                     className={
-                      asset.totalProfit >= 0
-                        ? 'font-bold text-brand-blue'
-                        : 'font-bold text-brand-red'
+                      asset.totalProfit > 0
+                        ? 'text-brand-blue'
+                        : asset.totalProfit === 0
+                          ? 'text-zinc-400'
+                          : 'text-brand-red'
                     }
                   >
                     {formatCryptoPrice(asset.totalProfit)}

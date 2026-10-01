@@ -7,7 +7,7 @@
  */
 export const formatCryptoPrice = (price: number): string => {
   // Защита: если прилетело некорректное число или NaN, возвращаем заглушку
-  if (typeof price !== 'number' || isNaN(price)) {
+  if (typeof price !== 'number' || isNaN(price) || price === 0) {
     return '\$0.00';
   }
 
