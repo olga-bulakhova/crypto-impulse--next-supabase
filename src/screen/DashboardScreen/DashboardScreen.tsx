@@ -43,7 +43,7 @@ export const DashboardScreen = async () => {
           title="Добавить новый актив"
           description="Зафиксируйте объем и стоимость покупки монеты в вашем портфеле"
           trigger={
-            <Button size="sm" variant="cyber">
+            <Button size="sm" variant="amber">
               Добавить актив
             </Button>
           }

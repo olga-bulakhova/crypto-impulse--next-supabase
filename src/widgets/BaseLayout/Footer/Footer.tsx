@@ -59,7 +59,6 @@ export const Footer = () => {
     <footer className="w-full border-t border-zinc-900 bg-zinc-950 font-sans text-zinc-500">
       <div className="mx-auto max-w-7xl px-4 py-8 md:py-10">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
-          {/* БЛОК ИНФОРМАЦИИ О БРЕНДЕ */}
           <div className="md:col-span-2">
             <Logo />
             <p className="mt-3 max-w-sm text-xs leading-relaxed text-zinc-600">
@@ -70,32 +69,28 @@ export const Footer = () => {
             </p>
           </div>
 
-          {/* СЕКЦИЯ 1: НАВИГАЦИЯ (Используем новые компоненты) */}
           <FooterSection title="Навигация">
             <FooterLink href={ROUTES.HOME}>Главная</FooterLink>
             <FooterLink href={ROUTES.AUTH.LOGIN}>Личный кабинет</FooterLink>
           </FooterSection>
 
-          {/* СЕКЦИЯ 2: ИНФРАСТРУКТУРА (Используем новые компоненты) */}
           <FooterSection title="Инфраструктура">
             <FooterLink href={ROUTES.EXTERNAL.COIN_STATS_API} isExternal>
               API сопряжение: CoinStats
             </FooterLink>
 
-            {/* Пульсирующий живой маяк статуса систем */}
-            <li className="flex items-center gap-2 text-[11px] text-emerald-400/90 select-none">
+            <li className="flex items-center gap-2 text-[11px] text-brand-blue select-none">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-blue opacity-75"></span>
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-blue"></span>
               </span>
               Системы в норме
             </li>
           </FooterSection>
         </div>
 
-        {/* НИЖНЯЯ СТРОКА: КОПИРАЙТ */}
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-zinc-900/60 pt-6 text-[11px] text-zinc-600 sm:flex-row">
-          <p>© {currentYear} Crypto Impulse. Все права защищены.</p>
+          <p>© {currentYear} Crypto Analysis. Все права защищены.</p>
           <p className="font-mono text-[10px] tracking-wider uppercase">
             Built with Next.js & Supabase
           </p>
