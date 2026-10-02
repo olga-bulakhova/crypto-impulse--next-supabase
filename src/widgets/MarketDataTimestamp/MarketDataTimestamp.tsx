@@ -7,16 +7,19 @@ interface MarketDataTimestampProps {
   isoTimestamp: string | null;
 }
 
+// Добавлен флаг hour12: false для принудительного 24-часового формата
 const timeFormatter = new Intl.DateTimeFormat(undefined, {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
+  hour12: false,
 });
 
 export const MarketDataTimestamp = ({
   isoTimestamp,
 }: MarketDataTimestampProps) => {
   const formattedTime = useMemo(() => {
+    console.log('timestamp', isoTimestamp);
     if (!isoTimestamp) return '--:--:--';
 
     try {
