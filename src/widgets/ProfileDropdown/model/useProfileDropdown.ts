@@ -12,8 +12,9 @@ export const useProfileDropdown = () => {
     try {
       await supabase.auth.signOut();
       setIsOpen(false);
-      router.refresh();
+
       router.push('/');
+      router.refresh();
     } catch (error) {
       console.error('[AUTH_SIGNOUT_ERROR] Ошибка при выходе из сессии:', error);
     }
