@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { DashboardScreen } from '@/screen/DashboardScreen';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Портфель | Crypto Analise',
   description:

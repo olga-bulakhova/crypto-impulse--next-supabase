@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { HomeScreen } from '@/screen/HomeScreen';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Crypto Analise | Терминал анализа волатильности и крипто-активов',
   description:

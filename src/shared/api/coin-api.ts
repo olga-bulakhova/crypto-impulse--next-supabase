@@ -1,3 +1,75 @@
+// import type { CoinItem } from '@/storage';
+// import { CACHE_TAGS } from '../constants';
+
+// export interface ApiCoinStatsResponse {
+//   result: CoinItem[];
+// }
+
+// const BASE_URL = 'https://api.coinstats.app/v1';
+
+// const API_ROUTES = {
+//   COINS: {
+//     BASE: '/coins',
+//   },
+// };
+
+// export const createHeaders = (
+//   customHeaders?: HeadersInit,
+//   hasBody = false,
+// ): HeadersInit => {
+//   const baseHeaders: Record<string, string> = {
+//     'X-API-KEY': process.env.COINSTATS_API_KEY || '',
+//   };
+
+//   if (hasBody) {
+//     baseHeaders['Content-Type'] = 'application/json';
+//   }
+
+//   return { ...baseHeaders, ...customHeaders };
+// };
+
+// export async function handleResponse<T>(response: Response): Promise<T> {
+//   if (response.status === 204) return {} as T;
+
+//   const data = await response.json();
+
+//   if (!response.ok) {
+//     throw new Error(
+//       data.error || `Ошибка сервера CoinStats: ${response.status}`,
+//     );
+//   }
+
+//   return data as T;
+// }
+
+// export const apiFetch = async <T>(
+//   endpoint: string,
+//   options: RequestInit = {},
+// ): Promise<T> => {
+//   const url = `${BASE_URL}${endpoint}`;
+//   const hasBody = !!options.body;
+
+//   const config: RequestInit = {
+//     ...options,
+//     headers: createHeaders(options.headers, hasBody),
+//   };
+
+//   const response = await fetch(url, config);
+//   return handleResponse<T>(response);
+// };
+
+// export const coinApi = {
+//   getAll: async (): Promise<ApiCoinStatsResponse> => {
+//     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
+//       method: 'GET',
+//       next: {
+//         revalidate: 15 * 60, //  15 минут кэширования на диске
+//         tags: [CACHE_TAGS.CRYPTO_COINS], // Системный тег для ручного сброса кэша
+//       },
+//     });
+//   },
+// };
+
 import type { CoinItem } from '@/storage';
 import { CACHE_TAGS } from '../constants';
 
@@ -58,33 +130,14 @@ export const apiFetch = async <T>(
   return handleResponse<T>(response);
 };
 
-// export const coinApi = {
-//   getAll: async (): Promise<ApiCoinStatsResponse> => {
-//     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
-//       method: 'GET',
-//       next: {
-//         revalidate: 15 * 60, //  15 минут кэширования на диске
-//         tags: [CACHE_TAGS.CRYPTO_COINS], // Системный тег для ручного сброса кэша
-//       },
-//     });
-//   },
-// };
-
 export const coinApi = {
-  getAll: async (forceRefresh = false): Promise<ApiCoinStatsResponse> => {
-    // Если нам нужно принудительное обновление, переопределяем настройки кэша Next.js
-    const cacheOptions = forceRefresh
-      ? { cache: 'no-store' as const } // Полностью в обход кэша
-      : {
-          next: {
-            revalidate: 15 * 60,
-            tags: [CACHE_TAGS.CRYPTO_COINS],
-          },
-        };
-
+  /**
+   * Получает свежие котировки напрямую из API без кэширования Next.js
+   */
+  getAll: async (): Promise<ApiCoinStatsResponse> => {
     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
       method: 'GET',
-      ...cacheOptions,
+      cache: 'no-store', // Полностью отключает кэширование запроса
     });
   },
 };
