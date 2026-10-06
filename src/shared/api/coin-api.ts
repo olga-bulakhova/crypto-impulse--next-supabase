@@ -137,7 +137,10 @@ export const coinApi = {
   getAll: async (): Promise<ApiCoinStatsResponse> => {
     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
       method: 'GET',
-      cache: 'no-store', // Полностью отключает кэширование запроса
+      next: {
+        revalidate: 60, // Кэшируем ровно на 15 секунд
+        tags: [CACHE_TAGS.CRYPTO_COINS], // Тег оставляем для ручного сброса
+      },
     });
   },
 };

@@ -6,13 +6,13 @@ import { ROUTES } from '@/shared/constants';
 export const CoinList = async () => {
   const coins = await CryptoStoreManager.getCachedCoins();
 
-  // if (coins.length === 0) {
-  //   return (
-  //     <div className="w-full rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 text-center text-xs text-zinc-500 shadow-2xl backdrop-blur-md">
-  //       Котировки временно недоступны... 📡
-  //     </div>
-  //   );
-  // }
+  if (coins.length === 0) {
+    return (
+      <div className="w-full rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 text-center text-xs text-zinc-500 shadow-2xl backdrop-blur-md">
+        Котировки временно недоступны... 📡
+      </div>
+    );
+  }
 
   return (
     <div className="w-full font-sans select-none">
@@ -28,19 +28,17 @@ export const CoinList = async () => {
         </span>
       </div>
 
-      {coins.length > 0 && (
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {coins.map((coin) => (
-            <Link
-              href={ROUTES.COIN(coin.id)}
-              key={coin.id}
-              className="block cursor-pointer"
-            >
-              <CoinCard coin={coin} />
-            </Link>
-          ))}
-        </div>
-      )}
+      <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        {coins.map((coin) => (
+          <Link
+            href={ROUTES.COIN(coin.id)}
+            key={coin.id}
+            className="block cursor-pointer"
+          >
+            <CoinCard coin={coin} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

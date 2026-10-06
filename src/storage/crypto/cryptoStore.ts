@@ -80,8 +80,11 @@
 //   },
 // };
 
+// В файле CryptoStoreManager.ts
+import { updateTag } from 'next/cache';
 import { coinApi } from '@/shared/api/coin-api';
 import type { CoinItem } from './cryptoTypes';
+import { CACHE_TAGS } from '@/shared/constants';
 
 export interface SelectOption {
   label: string;
@@ -91,7 +94,7 @@ export interface SelectOption {
 
 export const CryptoStoreManager = {
   /**
-   * Получает актуальный список монет (каждый раз выполняет новый запрос к API)
+   * Безопасное получение данных (берется из минутного кэша Next.js)
    */
   async getCachedCoins(): Promise<CoinItem[]> {
     try {
@@ -101,7 +104,7 @@ export const CryptoStoreManager = {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       console.error(
-        '[GLOBAL_STORE_FETCH_ERROR] Не удалось загрузить свежие котировки:',
+        '[GLOBAL_STORE_FETCH_ERROR] Не удалось прочитать кэш котировок:',
         errorMessage,
       );
       return [];
@@ -109,10 +112,24 @@ export const CryptoStoreManager = {
   },
 
   /**
-   * Перенаправляет запрос на получение свежих данных (кэша больше нет)
+   * 🚀 Принудительное обновление кэша по запросу пользователя (через Server Action)
    */
   async updateData(): Promise<CoinItem[]> {
-    console.log('[GLOBAL_STORE] Прямой запрос свежих данных без кэша...');
+    console.log(
+      '[GLOBAL_STORE] Инициирован принудительный сброс 1-минутного кэша...',
+    );
+    try {
+      // updateTag мгновенно сбрасывает кэш Next.js 16 в рамках текущего Server Action
+      updateTag(CACHE_TAGS.CRYPTO_COINS);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error(
+        '[GLOBAL_STORE_UPDATE_ERROR] Не удалось сбросить тег кэша:',
+        errorMessage,
+      );
+    }
+    // Сразу после инвалидации делаем ОДИН свежий запрос и возвращаем данные клиенту
     return this.getCachedCoins();
   },
 
@@ -141,10 +158,9 @@ export const CryptoStoreManager = {
   },
 
   /**
-   * Возвращает метку времени совершения операции на сервере
+   * Возвращает метку времени сканирования на сервере
    */
   getLastScanTime(): string {
     return new Date().toISOString();
   },
 };
-
