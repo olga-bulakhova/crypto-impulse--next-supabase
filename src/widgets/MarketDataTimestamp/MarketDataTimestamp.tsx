@@ -18,6 +18,7 @@ const timeFormatter = new Intl.DateTimeFormat(undefined, {
 export const MarketDataTimestamp = ({
   isoTimestamp,
 }: MarketDataTimestampProps) => {
+  
   const formattedTime = useMemo(() => {
     console.log('timestamp', isoTimestamp);
     if (!isoTimestamp) return '--:--:--';
