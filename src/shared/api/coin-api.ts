@@ -58,14 +58,33 @@ export const apiFetch = async <T>(
   return handleResponse<T>(response);
 };
 
+// export const coinApi = {
+//   getAll: async (): Promise<ApiCoinStatsResponse> => {
+//     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
+//       method: 'GET',
+//       next: {
+//         revalidate: 15 * 60, //  15 минут кэширования на диске
+//         tags: [CACHE_TAGS.CRYPTO_COINS], // Системный тег для ручного сброса кэша
+//       },
+//     });
+//   },
+// };
+
 export const coinApi = {
-  getAll: async (): Promise<ApiCoinStatsResponse> => {
+  getAll: async (forceRefresh = false): Promise<ApiCoinStatsResponse> => {
+    // Если нам нужно принудительное обновление, переопределяем настройки кэша Next.js
+    const cacheOptions = forceRefresh
+      ? { cache: 'no-store' as const } // Полностью в обход кэша
+      : {
+          next: {
+            revalidate: 15 * 60,
+            tags: [CACHE_TAGS.CRYPTO_COINS],
+          },
+        };
+
     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
       method: 'GET',
-      next: {
-        revalidate: 15 * 60, //  15 минут кэширования на диске
-        tags: [CACHE_TAGS.CRYPTO_COINS], // Системный тег для ручного сброса кэша
-      },
+      ...cacheOptions,
     });
   },
 };
