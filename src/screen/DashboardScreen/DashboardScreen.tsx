@@ -13,11 +13,8 @@ import { CryptoStoreManager } from '@/storage';
 import { AssetsStorageManager } from '@/storage/assets/assetsStore';
 import { EmptyAssetsState } from './ui/EmptyAssetsState';
 import { formatCryptoPrice } from '@/shared/lib';
-import { PortfolioChart, PortfolioProfitChart } from './ui/charts';
+import { DashboardCharts } from './ui/charts';
 
-/**
- * 🛸 СЕРВЕРНЫЙ ЭКРАН: Главная панель инвестора
- */
 export const DashboardScreen = async () => {
   const [formattedAssets, coinOptions, totalPortfolioCost] = await Promise.all([
     getPortfolioData(),
@@ -71,21 +68,7 @@ export const DashboardScreen = async () => {
               </span>
             </CyberHeading>
 
-            <div className="mt-8 flex flex-col gap-10">
-              <div className="max-w-[450px]">
-                <CyberHeading as="h3" className="text-3xs mb-6 text-zinc-500">
-                  Аллокация активов
-                </CyberHeading>
-                <PortfolioChart assets={formattedAssets} />
-              </div>
-
-              <div>
-                <CyberHeading as="h3" className="text-3xs mb-6 text-zinc-500">
-                  Чистый профит и убыток (PnL)
-                </CyberHeading>
-                <PortfolioProfitChart assets={formattedAssets} />
-              </div>
-            </div>
+            <DashboardCharts assets={formattedAssets} />
           </div>
         </div>
       ) : (

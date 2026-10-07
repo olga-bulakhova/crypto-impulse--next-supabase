@@ -1,2 +1,1 @@
-export { PortfolioChart } from './PortfolioChart';
-export { PortfolioProfitChart } from './PortfolioProfitChart';
+export { DashboardCharts } from './DashboardCharts';
