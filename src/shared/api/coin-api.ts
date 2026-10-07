@@ -59,13 +59,20 @@ export const apiFetch = async <T>(
 };
 
 export const coinApi = {
+  // getAll: async (): Promise<ApiCoinStatsResponse> => {
+  //   return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
+  //     method: 'GET',
+  //     next: {
+  //       revalidate: 60,
+  //       tags: [CACHE_TAGS.CRYPTO_COINS],
+  //     },
+  //   });
+  // },
+
   getAll: async (): Promise<ApiCoinStatsResponse> => {
     return apiFetch<ApiCoinStatsResponse>(API_ROUTES.COINS.BASE, {
       method: 'GET',
-      next: {
-        revalidate: 60,
-        tags: [CACHE_TAGS.CRYPTO_COINS],
-      },
+      cache: 'no-store', // Отключаем стандартный кэш fetch, кэшировать будем уровнем выше
     });
   },
 };
