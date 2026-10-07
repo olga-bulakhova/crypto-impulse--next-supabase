@@ -6,6 +6,8 @@ import { ROUTES } from '@/shared/constants';
 export const CoinList = async () => {
   const coins = await CryptoStoreManager.getCachedCoins();
 
+  //console.log('CoinList', coins);
+
   if (coins.length === 0) {
     return (
       <div className="w-full rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 text-center text-xs text-zinc-500 shadow-2xl backdrop-blur-md">

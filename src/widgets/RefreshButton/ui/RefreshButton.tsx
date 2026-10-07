@@ -17,7 +17,6 @@ export const RefreshButton = () => {
     startTransition(async () => {
       try {
         await refreshMarketDataAction();
-
         router.refresh();
       } catch (error: unknown) {
         const errorMessage =
